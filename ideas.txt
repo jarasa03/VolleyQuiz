@@ -1,0 +1,106 @@
+sistema de logros y recompensas.
+monedas.
+rankings y tablas de clasificación.
+historial de progreso.
+modo desafío (en tiempo real contra otro jugador)
+integración de Apis externas?
+
+guardar solo la mejor puntuación
+
+Modo Niveles:
+
+El usuario selecciona un test específico (por ejemplo, "Nivel 1 - Media").
+El sistema selecciona las preguntas correspondientes a ese test y muestra el cuestionario.
+Después de responder, se registra el resultado.
+Modo Arcade:
+
+El usuario selecciona la categoría (por ejemplo, "media").
+El sistema selecciona aleatoriamente 10 preguntas de esa categoría.
+El usuario juega el arcade con las 10 preguntas.
+Se registra el intento con las puntuaciones y el tiempo.
+
+--------
+BBDD HACER CON LARAVEL
+--------
+Usuarios (users)
+id INT PK AUTOINCREMENT
+name VARCHAR
+email VARCHAR (único)
+password VARCHAR
+email_verified_at TIMESTAMP (para la confirmación por correo)
+created_at TIMESTAMP
+updated_at TIMESTAMP
+
+Categorías (categories)
+id INT PK AUTOINCREMENT
+name VARCHAR (nombre de la categoría, ej. baja, media, alta)
+created_at TIMESTAMP
+updated_at TIMESTAMP
+
+Preguntas (questions)
+id INT PK AUTOINCREMENT
+question_text TEXT
+question_type VARCHAR (tipo de pregunta, opción múltiple, verdadero o falso)
+category_id INT FK hacia categories
+created_at TIMESTAMP
+updated_at TIMESTAMP
+
+Opciones de respuesta (answers)
+Solo si la pregunta es de opción múltiple. Aquí cada respuesta puede tener una marca para identificar si es correcta o no.
+id INT PK AUTOINCREMENT
+question_id INT (FK hacia questions)
+answer_text TEXT
+is_correct BOOLEAN
+created_at TIMESTAMP
+updated_at TIMESTAMP
+
+Tests (tests)
+id INT PK
+title VARCHAR (Nombre del test, ej. Nivel 1 - Media)
+difficulty VARCHAR (Nivel de dificultad, baja, media, alta)
+category_id INT (FK hacia categories)
+created_at TIMESTAMP
+updated_at TIMESTAMP
+
+Intentos de usuario (test_attempts)
+id INT PK AUTOINCREMENT
+user_id INT (FK hacia users) (ID del usuario que realizó el intento)
+test_id INT (FK hacia tests) (ID del test realizado)
+score INT (Puntuación obtenida en el intento)
+time_taken INT (Tiempo en segundos para completar el test)
+streak INT (Racha de aciertos del usuario)
+created_at TIMESTAMP (Fecha del intento)
+
+Etiquetas (tags)
+id INT PK AUTOINCREMENT
+name VARCHAR (Nombre de la etiqueta, ej. "servicio", "recepción")
+created_at TIMESTAMP
+updated_at TIMESTAMP
+
+Relación entre Preguntas y Etiquetas (question_tag)
+question_id INT (FK hacia questions)
+tag_id INT (FK hacia tags)
+PRIMARY KEY (FK hacia question_id, tag_id)
+
+Puntuaciones por Dificultad (difficulty_scores)
+id INT PK AUTOINCREMENT
+user_id INT (FK hacia users) (ID del usuario)
+test_id INT (FK hacia tests) (ID del test)
+difficulty VARCHAR (bajo, medio, alto) (Nivel de dificultad del test)
+score INT (Puntuación obtenida en el test)
+created_at TIMESTAMP
+updated_at TIMESTAMP
+
+Secciones de documentación (document_sections)
+id INT PK AUTOINCREMENT
+name VARCHAR (nombre de la sección: internacional, nacional, territorial)
+created_at TIMESTAMP
+updated_at TIMESTAMP
+
+Documentos (documents)
+id INT PK AUTOINCREMENT
+title VARCHAR (nombre del documento)
+file_path VARCHAR (ruta del archivo PDF)
+section_id INT (FK hacia document_sections)
+created_at TIMESTAMP
+updated_at TIMESTAMP
