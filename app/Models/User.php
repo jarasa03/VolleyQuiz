@@ -2,47 +2,27 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable // Extiende de Authenticatable en lugar de Model para la autenticación de usuarios de Laravel, se integra con su auth
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $fillable = ['name', 'email', 'password'];
+    protected $hidden = ['password', 'remember_token'];
+    protected $casts = ['email_verified_at' => 'datetime']; // Laravel lo manejará como objeto Carbon para operaciones fecha/hora
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    // Un usuario puede haber intentado varios tests
+    public function testAttempts()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasMany(TestAttempt::class);
+    }
+
+    // Un usuario puede tener puntuaciones por dificultad
+    public function difficultyScores()
+    {
+        return $this->hasMany(DifficultyScore::class);
     }
 }
