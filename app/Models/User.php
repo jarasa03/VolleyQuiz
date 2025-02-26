@@ -10,7 +10,7 @@ class User extends Authenticatable // Extiende de Authenticatable en lugar de Mo
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['name', 'email', 'password', 'role'];
     protected $hidden = ['password', 'remember_token'];
     protected $casts = ['email_verified_at' => 'datetime']; // Laravel lo manejará como objeto Carbon para operaciones fecha/hora
 
@@ -24,5 +24,11 @@ class User extends Authenticatable // Extiende de Authenticatable en lugar de Mo
     public function difficultyScores()
     {
         return $this->hasMany(DifficultyScore::class);
+    }
+
+    // Método para verificar si un usuario es administrador
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
     }
 }
