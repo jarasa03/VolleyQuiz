@@ -8,13 +8,13 @@ use Illuminate\Support\Facades\Validator;
 
 class CategoriesController extends Controller
 {
-    // 🔹 Obtener todas las categorías
+    // Obtener todas las categorías
     public function index()
     {
         return response()->json(Category::all(), 200);
     }
 
-    // 🔹 Crear una nueva categoría
+    // Crear una nueva categoría
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -30,7 +30,7 @@ class CategoriesController extends Controller
         return response()->json($category, 201);
     }
 
-    // 🔹 Obtener una categoría por ID
+    // Obtener una categoría por ID
     public function show($id)
     {
         $category = Category::find($id);
@@ -42,7 +42,7 @@ class CategoriesController extends Controller
         return response()->json($category, 200);
     }
 
-    // 🔹 Actualizar una categoría
+    // Actualizar una categoría
     public function update(Request $request, $id)
     {
         $category = Category::find($id);
@@ -64,7 +64,7 @@ class CategoriesController extends Controller
         return response()->json($category, 200);
     }
 
-    // 🔹 Eliminar una categoría
+    // Eliminar una categoría
     public function destroy($id)
     {
         $category = Category::find($id);
