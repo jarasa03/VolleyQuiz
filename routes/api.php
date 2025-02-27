@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AnswersController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\DifficultyScoreController;
+use App\Http\Controllers\DocumentsController;
 
 Route::apiResource('answers', AnswersController::class)->names([
     'index'   => 'answers.index', // Obtener todas las respuestas
@@ -28,3 +29,14 @@ Route::apiResource('difficulty-scores', DifficultyScoreController::class)->names
     'update'  => 'difficulty-scores.update',  // Actualizar una puntuación (si la nueva es mayor)
     'destroy' => 'difficulty-scores.destroy', // Eliminar una puntuación
 ]);
+
+Route::apiResource('documents', DocumentsController::class)->names([
+    'index'   => 'documents.index',    // Obtener todos los documentos
+    'store'   => 'documents.store',    // Subir un nuevo documento
+    'show'    => 'documents.show',     // Obtener un documento específico
+    'update'  => 'documents.update',   // Actualizar un documento
+    'destroy' => 'documents.destroy',  // Eliminar un documento
+]);
+
+// Ruta específica para descargar documentos
+Route::get('documents/{id}/download', [DocumentsController::class, 'download'])->name('documents.download');
