@@ -8,13 +8,13 @@ use Illuminate\Support\Facades\Validator;
 
 class DocumentSectionsController extends Controller
 {
-    // 🔹 Obtener todas las secciones de documentos
+    // Obtener todas las secciones de documentos
     public function index()
     {
         return response()->json(DocumentSection::all(), 200);
     }
 
-    // 🔹 Crear una nueva sección de documentos
+    // Crear una nueva sección de documentos
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -30,7 +30,7 @@ class DocumentSectionsController extends Controller
         return response()->json($section, 201);
     }
 
-    // 🔹 Obtener una sección de documentos por ID
+    // Obtener una sección de documentos por ID
     public function show($id)
     {
         $section = DocumentSection::find($id);
@@ -42,7 +42,7 @@ class DocumentSectionsController extends Controller
         return response()->json($section, 200);
     }
 
-    // 🔹 Actualizar una sección de documentos
+    // Actualizar una sección de documentos
     public function update(Request $request, $id)
     {
         $section = DocumentSection::find($id);
@@ -64,7 +64,7 @@ class DocumentSectionsController extends Controller
         return response()->json($section, 200);
     }
 
-    // 🔹 Eliminar una sección de documentos
+    // Eliminar una sección de documentos
     public function destroy($id)
     {
         $section = DocumentSection::find($id);

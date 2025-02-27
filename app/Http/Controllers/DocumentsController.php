@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\Storage;
 
 class DocumentsController extends Controller
 {
-    // 🔹 Obtener todos los documentos
+    // Obtener todos los documentos
     public function index()
     {
         return response()->json(Document::all(), 200);
     }
 
-    // 🔹 Subir un nuevo documento
+    // Subir un nuevo documento
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -41,7 +41,7 @@ class DocumentsController extends Controller
         return response()->json($document, 201);
     }
 
-    // 🔹 Obtener un documento por ID
+    // Obtener un documento por ID
     public function show($id)
     {
         $document = Document::find($id);
@@ -53,7 +53,7 @@ class DocumentsController extends Controller
         return response()->json($document, 200);
     }
 
-    // 🔹 Descargar un documento
+    // Descargar un documento
     public function download($id)
     {
         $document = Document::find($id);
@@ -65,7 +65,7 @@ class DocumentsController extends Controller
         return Storage::download($document->file_path);
     }
 
-    // 🔹 Actualizar un documento
+    // Actualizar un documento
     public function update(Request $request, $id)
     {
         $document = Document::find($id);
@@ -95,7 +95,7 @@ class DocumentsController extends Controller
         return response()->json($document, 200);
     }
 
-    // 🔹 Eliminar un documento
+    // Eliminar un documento
     public function destroy($id)
     {
         $document = Document::find($id);
