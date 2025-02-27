@@ -58,3 +58,7 @@ Route::apiResource('questions', QuestionsController::class)->names([
     'update'  => 'questions.update',  // Actualizar una pregunta
     'destroy' => 'questions.destroy', // Eliminar una pregunta
 ]);
+
+// Rutas específicas para poner o quitar tags de las preguntas
+Route::post('questions/{id}/tags', [QuestionsController::class, 'attachTags'])->name('questions.attachTags');
+Route::delete('questions/{question_id}/tags/{tag_id}', [QuestionsController::class, 'detachTag'])->name('questions.detachTag');

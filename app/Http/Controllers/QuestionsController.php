@@ -85,4 +85,35 @@ class QuestionsController extends Controller
 
         return response()->json(['message' => 'Pregunta eliminada'], 200);
     }
+
+    // Asignar etiquetas a una pregunta
+    public function attachTags(Request $request, $id)
+    {
+        $question = Question::find($id);
+        if (!$question) {
+            return response()->json(['message' => 'Pregunta no encontrada'], 404);
+        }
+
+        $request->validate([
+            'tags' => 'required|array',
+            'tags.*' => 'exists:tags,id', // Cada ID de tag debe existir en la tabla tags
+        ]);
+
+        $question->tags()->syncWithoutDetaching($request->tags); // Evita duplicados
+
+        return response()->json(['message' => 'Etiquetas asignadas con éxito'], 200);
+    }
+
+    // Eliminar una etiqueta de una pregunta
+    public function detachTag($question_id, $tag_id)
+    {
+        $question = Question::find($question_id);
+        if (!$question) {
+            return response()->json(['message' => 'Pregunta no encontrada'], 404);
+        }
+
+        $question->tags()->detach($tag_id);
+
+        return response()->json(['message' => 'Etiqueta eliminada con éxito'], 200);
+    }
 }
