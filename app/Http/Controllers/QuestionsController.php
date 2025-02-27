@@ -2,48 +2,87 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Models\Question;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
-class QuestionController extends Controller
+class QuestionsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // 🔹 Obtener todas las preguntas
     public function index()
     {
-        //
+        return response()->json(Question::with(['category', 'answers', 'tags'])->get(), 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // 🔹 Crear una nueva pregunta
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'question_text' => 'required|string',
+            'question_type' => 'required|string|in:multiple_choice,true_false',
+            'category_id'   => 'required|exists:categories,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $question = Question::create([
+            'question_text' => $request->question_text,
+            'question_type' => $request->question_type,
+            'category_id'   => $request->category_id,
+        ]);
+
+        return response()->json($question, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // 🔹 Obtener una pregunta por ID
+    public function show($id)
     {
-        //
+        $question = Question::with(['category', 'answers', 'tags'])->find($id);
+
+        if (!$question) {
+            return response()->json(['message' => 'Pregunta no encontrada'], 404);
+        }
+
+        return response()->json($question, 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // 🔹 Actualizar una pregunta
+    public function update(Request $request, $id)
     {
-        //
+        $question = Question::find($id);
+
+        if (!$question) {
+            return response()->json(['message' => 'Pregunta no encontrada'], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'question_text' => 'sometimes|string',
+            'question_type' => 'sometimes|string|in:multiple_choice,true_false',
+            'category_id'   => 'sometimes|exists:categories,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $question->update($request->only(['question_text', 'question_type', 'category_id']));
+
+        return response()->json($question, 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    // 🔹 Eliminar una pregunta
+    public function destroy($id)
     {
-        //
+        $question = Question::find($id);
+
+        if (!$question) {
+            return response()->json(['message' => 'Pregunta no encontrada'], 404);
+        }
+
+        $question->delete();
+
+        return response()->json(['message' => 'Pregunta eliminada'], 200);
     }
 }

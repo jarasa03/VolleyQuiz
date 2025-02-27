@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\DifficultyScoreController;
 use App\Http\Controllers\DocumentsController;
 use App\Http\Controllers\DocumentSectionsController;
+use App\Http\Controllers\QuestionsController;
 
 Route::apiResource('answers', AnswersController::class)->names([
     'index'   => 'answers.index', // Obtener todas las respuestas
@@ -48,4 +49,12 @@ Route::apiResource('document-sections', DocumentSectionsController::class)->name
     'show'    => 'document-sections.show',    // Obtener una sección específica
     'update'  => 'document-sections.update',  // Actualizar una sección
     'destroy' => 'document-sections.destroy', // Eliminar una sección
+]);
+
+Route::apiResource('questions', QuestionsController::class)->names([
+    'index'   => 'questions.index',   // Obtener todas las preguntas
+    'store'   => 'questions.store',   // Crear una nueva pregunta
+    'show'    => 'questions.show',    // Obtener una pregunta específica
+    'update'  => 'questions.update',  // Actualizar una pregunta
+    'destroy' => 'questions.destroy', // Eliminar una pregunta
 ]);
