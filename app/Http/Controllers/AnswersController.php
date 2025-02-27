@@ -2,48 +2,74 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Models\Answer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
-class AnswerController extends Controller
+class AnswersController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Obtener todas las respuestas
     public function index()
     {
-        //
+        return response()->json(Answer::all(), 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Crear una nueva respuesta
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'question_id' => 'required|exists:questions,id',
+            'answer_text' => 'required|string|max:255',
+            'is_correct' => 'required|boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $answer = Answer::create($request->all());
+        return response()->json($answer, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // Obtener una respuesta específica
+    public function show($id)
     {
-        //
+        $answer = Answer::find($id);
+        if (!$answer) {
+            return response()->json(['message' => 'Respuesta no encontrada'], 404);
+        }
+        return response()->json($answer, 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // Actualizar una respuesta
+    public function update(Request $request, $id)
     {
-        //
+        $answer = Answer::find($id);
+        if (!$answer) {
+            return response()->json(['message' => 'Respuesta no encontrada'], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'answer_text' => 'sometimes|string|max:255',
+            'is_correct' => 'sometimes|boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $answer->update($request->all());
+        return response()->json($answer, 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    // Eliminar una respuesta
+    public function destroy($id)
     {
-        //
+        $answer = Answer::find($id);
+        if (!$answer) {
+            return response()->json(['message' => 'Respuesta no encontrada'], 404);
+        }
+        $answer->delete();
+        return response()->json(['message' => 'Respuesta eliminada'], 200);
     }
 }
