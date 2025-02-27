@@ -1,23 +1,46 @@
-/.phpunit.cache
-/node_modules
-/public/build
-/public/hot
-/public/storage
-/storage/*.key
-/storage/pail
-/vendor
+# 🛑 Laravel - Archivos esenciales que NO deben subirse
+
+# Entorno y Configuración
 .env
-.env.backup
-.env.production
-.phpactor.json
+.env.*
+!.env.example  # Mantiene el ejemplo de env
+
+# Dependencias y archivos compilados
+/vendor
+/node_modules
+/public/storage
+/public/hot
+/public/build
+/bootstrap/cache
+
+# Archivos de logs y caché
+/storage/*.key
+/storage/oauth-private.key
+/storage/oauth-public.key
+/storage/framework/*
+/storage/logs/*
+/storage/pail
+.phpunit.cache
 .phpunit.result.cache
-Homestead.json
-Homestead.yaml
+
+# Archivos de depuración y dependencias internas
+composer.lock
+yarn.lock
 npm-debug.log
 yarn-error.log
+/.phpunit.result.cache
+Homestead.json
+Homestead.yaml
 /auth.json
+
+# Archivos de IDEs (VSCode, PHPStorm, Fleet, etc.)
 /.fleet
 /.idea
-/.nova
 /.vscode
+/.phpstorm.meta.php
+/.nova
 /.zed
+
+# Otros archivos innecesarios
+.DS_Store
+Thumbs.db
