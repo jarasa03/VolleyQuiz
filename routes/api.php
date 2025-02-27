@@ -5,6 +5,7 @@ use App\Http\Controllers\AnswersController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\DifficultyScoreController;
 use App\Http\Controllers\DocumentsController;
+use App\Http\Controllers\DocumentSectionsController;
 
 Route::apiResource('answers', AnswersController::class)->names([
     'index'   => 'answers.index', // Obtener todas las respuestas
@@ -40,3 +41,11 @@ Route::apiResource('documents', DocumentsController::class)->names([
 
 // Ruta específica para descargar documentos
 Route::get('documents/{id}/download', [DocumentsController::class, 'download'])->name('documents.download');
+
+Route::apiResource('document-sections', DocumentSectionsController::class)->names([
+    'index'   => 'document-sections.index',   // Obtener todas las secciones de documentos
+    'store'   => 'document-sections.store',   // Crear una nueva sección
+    'show'    => 'document-sections.show',    // Obtener una sección específica
+    'update'  => 'document-sections.update',  // Actualizar una sección
+    'destroy' => 'document-sections.destroy', // Eliminar una sección
+]);
