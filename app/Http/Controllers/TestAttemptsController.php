@@ -2,48 +2,91 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Models\TestAttempt;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
-class TestAttemptController extends Controller
+class TestAttemptsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Obtener todos los intentos
     public function index()
     {
-        //
+        return response()->json(TestAttempt::all(), 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Crear un nuevo intento de test
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id', // Debe ser un usuario válido
+            'test_id' => 'required|exists:tests,id', // Debe ser un test válido
+            'score' => 'required|integer|min:0',
+            'time_taken' => 'required|integer|min:0',
+            'streak' => 'required|integer|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $testAttempt = TestAttempt::create([
+            'user_id' => $request->user_id,
+            'test_id' => $request->test_id,
+            'score' => $request->score,
+            'time_taken' => $request->time_taken,
+            'streak' => $request->streak,
+        ]);
+
+        return response()->json($testAttempt, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // Obtener un intento por ID
+    public function show($id)
     {
-        //
+        $testAttempt = TestAttempt::find($id);
+
+        if (!$testAttempt) {
+            return response()->json(['message' => 'Intento no encontrado'], 404);
+        }
+
+        return response()->json($testAttempt, 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // Actualizar un intento de test
+    public function update(Request $request, $id)
     {
-        //
+        $testAttempt = TestAttempt::find($id);
+
+        if (!$testAttempt) {
+            return response()->json(['message' => 'Intento no encontrado'], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'score' => 'sometimes|integer|min:0',
+            'time_taken' => 'sometimes|integer|min:0',
+            'streak' => 'sometimes|integer|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $testAttempt->update($request->only(['score', 'time_taken', 'streak']));
+
+        return response()->json($testAttempt, 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    // Eliminar un intento de test
+    public function destroy($id)
     {
-        //
+        $testAttempt = TestAttempt::find($id);
+
+        if (!$testAttempt) {
+            return response()->json(['message' => 'Intento no encontrado'], 404);
+        }
+
+        $testAttempt->delete();
+
+        return response()->json(['message' => 'Intento eliminado'], 200);
     }
 }

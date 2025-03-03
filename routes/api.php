@@ -9,6 +9,7 @@ use App\Http\Controllers\DocumentSectionsController;
 use App\Http\Controllers\QuestionsController;
 use App\Http\Controllers\TagsController;
 use App\Http\Controllers\TestController;
+use App\Http\Controllers\TestAttemptsController;
 
 Route::apiResource('answers', AnswersController::class)->names([
     'index'   => 'answers.index', // Obtener todas las respuestas
@@ -79,4 +80,12 @@ Route::apiResource('tests', TestController::class)->names([
     'show'    => 'tests.show',    // Obtener un test específico
     'update'  => 'tests.update',  // Actualizar un test
     'destroy' => 'tests.destroy', // Eliminar un test
+]);
+
+Route::apiResource('test-attempts', TestAttemptsController::class)->names([
+    'index'   => 'test-attempts.index',   // Obtener todos los intentos
+    'store'   => 'test-attempts.store',   // Crear un intento
+    'show'    => 'test-attempts.show',    // Obtener un intento
+    'update'  => 'test-attempts.update',  // Actualizar un intento
+    'destroy' => 'test-attempts.destroy', // Eliminar un intento
 ]);
