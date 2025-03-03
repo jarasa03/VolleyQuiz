@@ -10,6 +10,8 @@ use App\Http\Controllers\QuestionsController;
 use App\Http\Controllers\TagsController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\TestAttemptsController;
+use App\Http\Controllers\UsersController;
+use App\Http\Controllers\AuthController;
 
 Route::apiResource('answers', AnswersController::class)->names([
     'index'   => 'answers.index', // Obtener todas las respuestas
@@ -89,3 +91,23 @@ Route::apiResource('test-attempts', TestAttemptsController::class)->names([
     'update'  => 'test-attempts.update',  // Actualizar un intento
     'destroy' => 'test-attempts.destroy', // Eliminar un intento
 ]);
+
+// Rutas protegidas por Sanctum
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/users', [UsersController::class, 'index'])->name('users.index');
+    Route::get('/users/{id}', [UsersController::class, 'show'])->name('users.show');
+    Route::post('/users', [UsersController::class, 'store'])->name('users.store');
+    Route::put('/users/{id}', [UsersController::class, 'update'])->name('users.update');
+    Route::delete('/users/{id}', [UsersController::class, 'destroy'])->name('users.destroy');
+});
+
+// Autenticación
+Route::post('/login', [App\Http\Controllers\AuthController::class, 'login'])->name('auth.login');
+Route::post('/register', [App\Http\Controllers\AuthController::class, 'register'])->name('auth.register');
+Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->middleware('auth:sanctum')->name('auth.logout');
+
+Route::middleware('api')->group(function () {
+    Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
+    Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum')->name('auth.logout');
+});
