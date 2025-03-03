@@ -8,6 +8,7 @@ use App\Http\Controllers\DocumentsController;
 use App\Http\Controllers\DocumentSectionsController;
 use App\Http\Controllers\QuestionsController;
 use App\Http\Controllers\TagsController;
+use App\Http\Controllers\TestController;
 
 Route::apiResource('answers', AnswersController::class)->names([
     'index'   => 'answers.index', // Obtener todas las respuestas
@@ -70,4 +71,12 @@ Route::apiResource('tags', TagsController::class)->names([
     'show'    => 'tags.show',    // Obtener una etiqueta específica
     'update'  => 'tags.update',  // Actualizar una etiqueta
     'destroy' => 'tags.destroy', // Eliminar una etiqueta
+]);
+
+Route::apiResource('tests', TestController::class)->names([
+    'index'   => 'tests.index',   // Obtener todos los tests
+    'store'   => 'tests.store',   // Crear un nuevo test
+    'show'    => 'tests.show',    // Obtener un test específico
+    'update'  => 'tests.update',  // Actualizar un test
+    'destroy' => 'tests.destroy', // Eliminar un test
 ]);
