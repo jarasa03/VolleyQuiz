@@ -7,6 +7,7 @@ use App\Http\Controllers\DifficultyScoreController;
 use App\Http\Controllers\DocumentsController;
 use App\Http\Controllers\DocumentSectionsController;
 use App\Http\Controllers\QuestionsController;
+use App\Http\Controllers\TagsController;
 
 Route::apiResource('answers', AnswersController::class)->names([
     'index'   => 'answers.index', // Obtener todas las respuestas
@@ -62,3 +63,11 @@ Route::apiResource('questions', QuestionsController::class)->names([
 // Rutas específicas para poner o quitar tags de las preguntas
 Route::post('questions/{id}/tags', [QuestionsController::class, 'attachTags'])->name('questions.attachTags');
 Route::delete('questions/{question_id}/tags/{tag_id}', [QuestionsController::class, 'detachTag'])->name('questions.detachTag');
+
+Route::apiResource('tags', TagsController::class)->names([
+    'index'   => 'tags.index',   // Obtener todas las etiquetas
+    'store'   => 'tags.store',   // Crear una nueva etiqueta
+    'show'    => 'tags.show',    // Obtener una etiqueta específica
+    'update'  => 'tags.update',  // Actualizar una etiqueta
+    'destroy' => 'tags.destroy', // Eliminar una etiqueta
+]);

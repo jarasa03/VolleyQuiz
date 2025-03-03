@@ -2,48 +2,79 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class TagsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Obtener todas las etiquetas
     public function index()
     {
-        //
+        return response()->json(Tag::all(), 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Crear una nueva etiqueta
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|unique:tags,name|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $tag = Tag::create(['name' => $request->name]);
+
+        return response()->json($tag, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // Obtener una etiqueta por ID
+    public function show($id)
     {
-        //
+        $tag = Tag::find($id);
+
+        if (!$tag) {
+            return response()->json(['message' => 'Etiqueta no encontrada'], 404);
+        }
+
+        return response()->json($tag, 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // Actualizar una etiqueta
+    public function update(Request $request, $id)
     {
-        //
+        $tag = Tag::find($id);
+
+        if (!$tag) {
+            return response()->json(['message' => 'Etiqueta no encontrada'], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|unique:tags,name|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $tag->update(['name' => $request->name]);
+
+        return response()->json($tag, 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    // Eliminar una etiqueta
+    public function destroy($id)
     {
-        //
+        $tag = Tag::find($id);
+
+        if (!$tag) {
+            return response()->json(['message' => 'Etiqueta no encontrada'], 404);
+        }
+
+        $tag->delete();
+
+        return response()->json(['message' => 'Etiqueta eliminada'], 200);
     }
 }
