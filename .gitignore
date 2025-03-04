@@ -2,8 +2,11 @@
 
 # Entorno y Configuración
 .env
-.env.*
-!.env.example  # Mantiene el ejemplo de env
+.env.local
+.env.development
+.env.production
+.env.testing
+!.env.example
 
 # Dependencias y archivos compilados
 /vendor
