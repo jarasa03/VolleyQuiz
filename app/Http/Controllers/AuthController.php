@@ -10,7 +10,15 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    // 🔹 REGISTRO DE USUARIO
+    /**
+     * Registra un nuevo usuario en la base de datos.
+     * 
+     * Se validan los datos del usuario antes de su creación. Se genera un 
+     * token de autenticación utilizando Sanctum.
+     *
+     * @param Request $request La solicitud HTTP con los datos del usuario.
+     * @return \Illuminate\Http\JsonResponse Respuesta con los datos del usuario registrado y su token de acceso.
+     */
     public function register(Request $request)
     {
         $request->validate([
@@ -23,10 +31,10 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'user', // Por defecto, todos los registrados son "user"
+            'role' => 'user', // Por defecto, se asigna el rol "user".
         ]);
 
-        // Crear un token para el usuario recién registrado
+        // Se genera un token de acceso para el usuario registrado.
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -35,23 +43,32 @@ class AuthController extends Controller
         ], 201);
     }
 
-    // 🔹 LOGIN DE USUARIO
+    /**
+     * Autentica a un usuario y genera un token de acceso.
+     * 
+     * Se valida la existencia del usuario en la base de datos y se verifica 
+     * la contraseña proporcionada. Si la autenticación es correcta, se genera 
+     * un token de acceso.
+     *
+     * @param Request $request La solicitud HTTP con credenciales de usuario.
+     * @return \Illuminate\Http\JsonResponse Respuesta con los datos del usuario autenticado y su token de acceso.
+     */
     public function login(Request $request)
     {
         $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
         ]);
-    
+
         $user = User::where('email', $request->email)->first();
-    
+
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Credenciales incorrectas'], 401);
         }
-    
-        // 🔹 Aquí generamos un token con Sanctum y lo devolvemos en JSON
+
+        // Se genera un token con Sanctum para el usuario autenticado.
         $token = $user->createToken('auth_token')->plainTextToken;
-    
+
         return response()->json([
             'message' => 'Inicio de sesión exitoso',
             'user' => $user,
@@ -59,7 +76,15 @@ class AuthController extends Controller
         ], 200);
     }
 
-    // 🔹 LOGOUT DE USUARIO
+    /**
+     * Cierra la sesión del usuario autenticado eliminando sus tokens activos.
+     * 
+     * Se eliminan todos los tokens asociados al usuario, invalidando cualquier 
+     * sesión activa en la aplicación.
+     *
+     * @param Request $request La solicitud HTTP con la autenticación del usuario.
+     * @return \Illuminate\Http\JsonResponse Respuesta confirmando el cierre de sesión.
+     */
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
