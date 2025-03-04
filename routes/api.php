@@ -106,8 +106,7 @@ Route::post('/login', [App\Http\Controllers\AuthController::class, 'login'])->na
 Route::post('/register', [App\Http\Controllers\AuthController::class, 'register'])->name('auth.register');
 Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->middleware('auth:sanctum')->name('auth.logout');
 
-Route::middleware('api')->group(function () {
-    Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
-    Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
-    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum')->name('auth.logout');
-});
+// Esto soluciona el error "Route [login] not defined."
+Route::get('/login', function () {
+    return response()->json(['message' => 'Debes iniciar sesión'], 401);
+})->name('login');

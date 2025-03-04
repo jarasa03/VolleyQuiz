@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'sanctum', // Asegura que Sanctum sea el guard por defecto
+        'guard' => 'web',
         'passwords' => 'users',
     ],
 
@@ -42,9 +42,8 @@ return [
         ],
 
         'api' => [ // 🔹 Añade esto para que API use Sanctum correctamente
-            'driver' => 'token',
+            'driver' => 'sanctum',
             'provider' => 'users',
-            'hash' => 'false',
         ],
     ],
 

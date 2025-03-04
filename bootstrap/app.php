@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->group('api', [
             EnsureFrontendRequestsAreStateful::class, // Maneja la autenticación con Sanctum
+            'auth:sanctum',  // <- Asegurar que este middleware está en las rutas API
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
