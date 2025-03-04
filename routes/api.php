@@ -12,6 +12,9 @@ use App\Http\Controllers\TestController;
 use App\Http\Controllers\TestAttemptsController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\AuthController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 Route::apiResource('answers', AnswersController::class)->names([
     'index'   => 'answers.index', // Obtener todas las respuestas
@@ -110,3 +113,19 @@ Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->
 Route::get('/login', function () {
     return response()->json(['message' => 'Debes iniciar sesión'], 401);
 })->name('login');
+
+// Ruta para reenviar el correo de verificación
+Route::post('/email/verification-notification', function (Request $request) {
+    if ($request->user()->hasVerifiedEmail()) {
+        return response()->json(['message' => 'El email ya está verificado.'], 200);
+    }
+
+    $request->user()->sendEmailVerificationNotification();
+    return response()->json(['message' => 'Email de verificación enviado.'], 200);
+})->middleware(['auth:sanctum']);
+
+// Ruta para verificar el email
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return response()->json(['message' => 'Email verificado con éxito.'], 200);
+})->middleware(['auth:sanctum'])->name('verification.verify');

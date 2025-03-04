@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail; // <- Importar la interfaz
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens; // IMPORTANTE: Agregar esta línea para Sanctum
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail // <- Implementar la interfaz
 {
     use HasApiTokens, HasFactory, Notifiable;
 

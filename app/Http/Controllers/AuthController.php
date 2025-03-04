@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\Events\Registered; // <- Importar evento
 
 class AuthController extends Controller
 {
@@ -21,23 +22,29 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
+        // Validación de los datos de entrada
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
         ]);
 
+        // Crear el usuario en la base de datos
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'user', // Por defecto, se asigna el rol "user".
+            'role' => 'user', // Rol predeterminado
         ]);
 
-        // Se genera un token de acceso para el usuario registrado.
+        // 🔹 Disparar el evento para que Laravel envíe el email de verificación
+        event(new Registered($user));
+
+        // Generar un token de acceso para el usuario registrado.
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
+            'message' => 'Usuario registrado con éxito. Se ha enviado un email de verificación.',
             'user' => $user,
             'token' => $token,
         ], 201);
