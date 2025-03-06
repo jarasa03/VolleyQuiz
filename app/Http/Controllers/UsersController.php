@@ -8,9 +8,18 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * Controlador para la gestión de usuarios.
+ */
 class UsersController extends Controller
 {
-    // Obtener todos los usuarios (Solo Admin)
+    /**
+     * Obtiene la lista de todos los usuarios.
+     * 
+     * Solo un usuario con rol de administrador puede acceder a esta información.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta con la lista de usuarios o un mensaje de error.
+     */
     public function index()
     {
         // Asegurar que el usuario se autentique manualmente si Auth::user() es null
@@ -42,7 +51,14 @@ class UsersController extends Controller
         return response()->json(User::all(), 200);
     }
 
-    // Obtener un usuario por ID (Un usuario solo puede ver su propio perfil o un admin puede ver todos)
+    /**
+     * Obtiene la información de un usuario por su ID.
+     * 
+     * Un usuario solo puede ver su propio perfil, mientras que un administrador puede ver cualquier perfil.
+     *
+     * @param int $id ID del usuario a consultar.
+     * @return \Illuminate\Http\JsonResponse Respuesta con la información del usuario o un mensaje de error.
+     */
     public function show($id)
     {
         // Asegurar que el usuario se autentique manualmente si Auth::user() es null
@@ -82,7 +98,14 @@ class UsersController extends Controller
     }
 
 
-    // Crear un nuevo usuario (Solo admins pueden crear usuarios con rol específico)
+    /**
+     * Crea un nuevo usuario en la base de datos.
+     * 
+     * Solo un administrador puede registrar nuevos usuarios y asignarles roles específicos.
+     *
+     * @param Request $request Datos enviados en la solicitud.
+     * @return \Illuminate\Http\JsonResponse Respuesta con los datos del usuario creado o un mensaje de error.
+     */
     public function store(Request $request)
     {
         // Asegurar que el usuario se autentique manualmente si Auth::user() es null
@@ -136,7 +159,15 @@ class UsersController extends Controller
     }
 
 
-    // Actualizar un usuario (El usuario puede actualizarse a sí mismo o un admin puede actualizar a cualquiera)
+    /**
+     * Actualiza los datos de un usuario existente.
+     * 
+     * Un usuario puede actualizar su propio perfil, mientras que un administrador puede modificar cualquier usuario.
+     *
+     * @param Request $request Datos enviados en la solicitud.
+     * @param int $id ID del usuario a actualizar.
+     * @return \Illuminate\Http\JsonResponse Respuesta con los datos actualizados o un mensaje de error.
+     */
     public function update(Request $request, $id)
     {
         // Asegurar que el usuario se autentique manualmente si Auth::user() es null
@@ -202,7 +233,14 @@ class UsersController extends Controller
     }
 
 
-    // Eliminar un usuario (Solo Admin puede eliminar usuarios, y nadie puede eliminarse a sí mismo)
+    /**
+     * Elimina un usuario de la base de datos.
+     * 
+     * Solo un administrador puede eliminar usuarios. Ningún usuario puede eliminar su propia cuenta.
+     *
+     * @param int $id ID del usuario a eliminar.
+     * @return \Illuminate\Http\JsonResponse Respuesta con un mensaje de confirmación o error.
+     */
     public function destroy($id)
     {
         // Asegurar que el usuario se autentique manualmente si Auth::user() es null
