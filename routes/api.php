@@ -15,6 +15,7 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Models\User;
 
 Route::apiResource('answers', AnswersController::class)->names([
     'index'   => 'answers.index', // Obtener todas las respuestas
@@ -128,21 +129,21 @@ Route::post('/email/verification-notification', function (Request $request) {
 
 // Ruta para verificar el email
 Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
-    $user = \App\Models\User::find($id);
+    $user = User::find($id);
 
     if (!$user) {
-        return response()->json(['message' => 'Usuario no encontrado.'], 404);
+        return view('auth.login', ['message' => '❌ Usuario no encontrado.']);
     }
 
-    if (! hash_equals(sha1($user->getEmailForVerification()), $hash)) {
-        return response()->json(['message' => 'Enlace de verificación no valido.'], 403);
+    if (!hash_equals(sha1($user->getEmailForVerification()), $hash)) {
+        return view('auth.login', ['message' => '⚠️ Enlace de verificación no válido.']);
     }
 
     if ($user->hasVerifiedEmail()) {
-        return response()->json(['message' => 'El email ya estaba verificado.'], 200);
+        return view('auth.login', ['message' => 'ℹ️ El email ya ha sido verificado.']);
     }
 
     $user->markEmailAsVerified();
 
-    return response()->json(['message' => 'Email verificado con exito.'], 200);
+    return view('auth.login', ['message' => '✅ ¡Email verificado con éxito! Ahora puedes iniciar sesión.']);
 })->name('verification.verify');
