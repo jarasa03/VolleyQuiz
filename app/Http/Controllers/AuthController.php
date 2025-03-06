@@ -24,7 +24,7 @@ class AuthController extends Controller
     {
         // Validación de los datos de entrada
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
         ]);
@@ -45,7 +45,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Usuario registrado con éxito. Se ha enviado un email de verificación.',
-            'user' => $user,
+            'user' => $user->only(['id', 'name', 'email', 'role', 'created_at']),
             'token' => $token,
         ], 201);
     }
@@ -95,6 +95,6 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
-        return response()->json(['message' => 'Sesión cerrada'], 200);
+        return response()->json(['message' => 'Sesión cerrada'], 204);
     }
 }
