@@ -94,22 +94,56 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        $request->user()->tokens()->delete();
-        return response()->json(['message' => 'Sesión cerrada'], 204);
+        Auth::guard('web')->logout(); // Asegura que se usa el guard "web"
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('auth.login')->with('message', 'Sesión cerrada correctamente.');
     }
 
+    /**
+     * Muestra la vista de inicio de sesión.
+     *
+     * Este método se encarga de devolver la vista del formulario de login.
+     * No requiere parámetros ni lógica adicional.
+     *
+     * @return \Illuminate\View\View Vista de la página de inicio de sesión.
+     */
+    public function showLogin()
+    {
+        return view('auth.login');
+    }
+
+    /**
+     * Maneja el proceso de autenticación del usuario.
+     *
+     * Este método valida las credenciales ingresadas por el usuario y,
+     * si son correctas, inicia sesión y redirige al dashboard. En caso
+     * de que las credenciales sean incorrectas, retorna a la vista de
+     * login con un mensaje de error.
+     *
+     * @param \Illuminate\Http\Request $request La solicitud HTTP con los datos de login.
+     * @return \Illuminate\Http\RedirectResponse Redirección al dashboard si la autenticación es exitosa,
+     *                                          o de vuelta al login con un mensaje de error si falla.
+     */
     public function webLogin(Request $request)
     {
+        // Validar que el usuario haya proporcionado un nombre y una contraseña válidos.
         $credentials = $request->validate([
             'name' => 'required|string',
             'password' => 'required|string',
         ]);
 
+        // Intentar autenticar al usuario con las credenciales proporcionadas.
         if (Auth::guard('web')->attempt($credentials)) {
+            // Regenerar la sesión para proteger contra ataques de fijación de sesión.
             $request->session()->regenerate();
+
+            // Redirigir al dashboard con un mensaje de éxito.
             return redirect()->route('dashboard')->with('success', 'Inicio de sesión exitoso.');
         }
 
-        return back()->withErrors(['name' => 'Las credenciales no son correctas.']);
+        // Si la autenticación falla, redirigir de vuelta con un mensaje de error.
+        return back()->with('error', 'Usuario o contraseña incorrectos.');
     }
 }

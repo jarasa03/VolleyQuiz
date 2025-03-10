@@ -29,18 +29,20 @@ Route::get('/login', function () {
 
 Route::post('/login', [AuthController::class, 'webLogin'])->name('auth.login.post');
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
 
-    // Puedes agregar más vistas protegidas aquí
-});
+// Ruta para mostrar el login
+Route::get('/login', [AuthController::class, 'showLogin'])->name('auth.login');
 
-Route::post('/logout', function () {
-    Auth::guard('web')->logout(); // Asegurar que el logout se hace en el guard correcto
-    request()->session()->invalidate(); // Invalida la sesión
-    request()->session()->regenerateToken(); // Regenera el token CSRF
+// Ruta para procesar el login
+Route::post('/login', [AuthController::class, 'webLogin'])->name('auth.login.post');
 
-    return redirect('/login')->with('message', 'Sesión cerrada correctamente.');
-})->name('auth.logout');
+// Rutas protegidas manualmente
+Route::get('/dashboard', function () {
+    if (!Auth::check()) {
+        return redirect()->route('auth.login')->with('error', 'Debes iniciar sesión antes de acceder.');
+    }
+    return view('dashboard');
+})->name('dashboard');
+
+// Ruta para cerrar sesión
+Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');

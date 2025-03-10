@@ -61,3 +61,36 @@ form {
         }
     }
 }
+
+.alert {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    &.alert-success {
+        color: #155724;
+        background-color: #d4edda;
+        border: 1px solid #c3e6cb;
+    }
+    &.alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        span {
+            font-size: 18px;
+            margin-right: 10px;
+        }
+    }
+    // Nuevo estilo amarillo
+    &.alert-warning {
+        color: #856404;
+        background-color: #fff3cd;
+        border: 1px solid #ffeeba;
+        span {
+            font-size: 18px;
+            margin-right: 10px;
+        }
+    }
+}
