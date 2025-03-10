@@ -97,4 +97,19 @@ class AuthController extends Controller
         $request->user()->tokens()->delete();
         return response()->json(['message' => 'Sesión cerrada'], 204);
     }
+
+    public function webLogin(Request $request)
+    {
+        $credentials = $request->validate([
+            'name' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        if (Auth::guard('web')->attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->route('dashboard')->with('success', 'Inicio de sesión exitoso.');
+        }
+
+        return back()->withErrors(['name' => 'Las credenciales no son correctas.']);
+    }
 }

@@ -5,25 +5,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    @vite(['resources/scss/app.scss'])
 </head>
 
 <body>
     <div class="container">
         <h1>Iniciar Sesión</h1>
 
-        <!-- Mostrar mensaje de estado si existe en la sesión -->
-        @if (isset($message))
-            <div class="alert alert-info">
-                {{ $message }}
+        <!-- Mostrar mensaje de éxito si existe en la sesión -->
+        @if (session('success'))
+            <div class="alert alert-success">
+                ✅ {{ session('success') }}
             </div>
         @endif
 
+        <!-- Mostrar mensaje de error si existe en la sesión -->
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <span>❌</span>
+                <p>{{ $errors->first() }}</p>
+            </div>
+        @endif
 
-        <form action="{{ route('auth.login') }}" method="POST">
+        <form action="{{ route('auth.login.post') }}" method="POST">
             @csrf
-            <label for="email">Correo Electrónico:</label>
-            <input type="email" id="email" name="email" required>
+            <label for="name">Nombre de Usuario:</label>
+            <input type="text" id="name" name="name" required value="{{ old('name') }}">
 
             <label for="password">Contraseña:</label>
             <input type="password" id="password" name="password" required>
