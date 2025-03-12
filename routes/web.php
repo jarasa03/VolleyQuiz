@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 Route::get('/', function () {
     return view('welcome');
@@ -39,10 +40,35 @@ Route::post('/login', [AuthController::class, 'webLogin'])->name('auth.login.pos
 // Rutas protegidas manualmente
 Route::get('/dashboard', function () {
     if (!Auth::check()) {
-        return redirect()->route('auth.login')->with('error', 'Debes iniciar sesión antes de acceder.');
+        return redirect()->route('auth.login')->with('error', '❌ Debes iniciar sesión antes de acceder.');
     }
     return view('dashboard');
 })->name('dashboard');
 
 // Ruta para cerrar sesión
 Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
+
+Route::get('/register', [AuthController::class, 'showRegister'])->name('auth.register');
+Route::post('/register', [AuthController::class, 'webRegister'])->name('auth.register.post');
+
+// Ruta para manejar la verificación del email y redirigir al dashboard
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request, $id, $hash) {
+    $user = \App\Models\User::find($id);
+
+    if (!$user) {
+        return redirect()->route('auth.login')->with('error', '❌ Usuario no encontrado.');
+    }
+
+    if (!hash_equals(sha1($user->getEmailForVerification()), $hash)) {
+        return redirect()->route('auth.login')->with('error', '❌ Enlace de verificación no válido.');
+    }
+
+    if ($user->hasVerifiedEmail()) {
+        return redirect()->route('auth.login')->with('warning', '⚠️ El email ya ha sido verificado.');
+    }
+
+    // Marcar como verificado
+    $user->markEmailAsVerified();
+
+    return redirect()->route('auth.login')->with('message', '✅ ¡Email verificado con éxito! Ahora puedes iniciar sesión.');
+})->middleware(['signed'])->name('verification.verify');

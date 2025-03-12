@@ -126,24 +126,3 @@ Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();
     return response()->json(['message' => 'Email de verificación enviado.'], 200);
 })->middleware(['auth:sanctum']);
-
-// Ruta para verificar el email
-Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
-    $user = User::find($id);
-
-    if (!$user) {
-        return view('auth.login', ['message' => '❌ Usuario no encontrado.']);
-    }
-
-    if (!hash_equals(sha1($user->getEmailForVerification()), $hash)) {
-        return view('auth.login', ['message' => '⚠️ Enlace de verificación no válido.']);
-    }
-
-    if ($user->hasVerifiedEmail()) {
-        return view('auth.login', ['message' => 'ℹ️ El email ya ha sido verificado.']);
-    }
-
-    $user->markEmailAsVerified();
-
-    return view('auth.login', ['message' => '✅ ¡Email verificado con éxito! Ahora puedes iniciar sesión.']);
-})->name('verification.verify');

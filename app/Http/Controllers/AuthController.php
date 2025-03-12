@@ -144,6 +144,43 @@ class AuthController extends Controller
         }
 
         // Si la autenticación falla, redirigir de vuelta con un mensaje de error.
-        return back()->with('error', 'Usuario o contraseña incorrectos.');
+        return back()->with('error', '❌ Usuario o contraseña incorrectos.');
+    }
+
+    /**
+     * Muestra el formulario de registro.
+     */
+    public function showRegister()
+    {
+        return view('auth.register');
+    }
+
+    /**
+     * Maneja el registro de un nuevo usuario en la web.
+     *
+     * Se encarga de validar y enviar los datos a la API de registro para
+     * crear un usuario, en lugar de duplicar la lógica aquí.
+     */
+    public function webRegister(Request $request)
+    {
+        // Validar los datos antes de enviarlos a la API
+        $request->validate([
+            'name' => 'required|string|max:255|unique:users',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        // Enviar la solicitud a la API de registro
+        $apiResponse = app()->make(AuthController::class)->register($request);
+
+        // Comprobar si el registro fue exitoso
+        if ($apiResponse->getStatusCode() === 201) {
+            $userData = json_decode($apiResponse->getContent(), true);
+            Auth::loginUsingId($userData['user']['id']);
+            return redirect()->route('dashboard')->with('success', 'Registro exitoso. Bienvenido!');
+        }
+
+        // Si falla, mostrar el mensaje de error
+        return back()->withErrors(['error' => 'No se pudo registrar el usuario. Inténtalo de nuevo.']);
     }
 }
