@@ -56,6 +56,7 @@
         </form>
 
         <p class="no-select">¿No tienes cuenta? <a href="{{ route('auth.register') }}">Regístrate aquí</a></p>
+        <p class="no-select"><a href="{{ route('password.request') }}">¿Olvidaste tu contraseña?</a></p>
     </div>
 </body>
 

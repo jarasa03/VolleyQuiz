@@ -7,7 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Auth\Events\Registered; // <- Importar evento
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -183,4 +186,62 @@ class AuthController extends Controller
         // Si falla, mostrar el mensaje de error
         return back()->withErrors(['error' => 'No se pudo registrar el usuario. Inténtalo de nuevo.']);
     }
+
+    /**
+ * Muestra la vista del formulario de solicitud de recuperación de contraseña.
+ */
+public function showForgotPasswordForm()
+{
+    return view('auth.passwords.email');
+}
+
+/**
+ * Maneja el envío del enlace de recuperación de contraseña al email del usuario.
+ */
+public function sendResetLinkEmail(Request $request)
+{
+    $request->validate(['email' => 'required|email']);
+
+    $status = Password::sendResetLink($request->only('email'));
+
+    return $status === Password::RESET_LINK_SENT
+        ? back()->with('message', '📩 Se ha enviado un enlace a tu correo.')
+        : back()->with('error', '❌ No se pudo enviar el enlace de recuperación.');
+}
+
+/**
+ * Muestra el formulario de restablecimiento de contraseña.
+ */
+public function showResetPasswordForm($token)
+{
+    return view('auth.passwords.reset', ['token' => $token]);
+}
+
+/**
+ * Maneja la actualización de la contraseña después de recibir el enlace de recuperación.
+ */
+public function resetPassword(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required|string|min:6|confirmed',
+        'token' => 'required'
+    ]);
+
+    $status = Password::reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function ($user, $password) {
+            $user->forceFill([
+                'password' => Hash::make($password),
+                'remember_token' => Str::random(60),
+            ])->save();
+
+            event(new PasswordReset($user));
+        }
+    );
+
+    return $status === Password::PASSWORD_RESET
+        ? redirect()->route('auth.login')->with('message', '✅ Tu contraseña ha sido restablecida.')
+        : back()->with('error', '❌ No se pudo restablecer la contraseña.');
+}
 }
