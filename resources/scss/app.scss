@@ -1,27 +1,32 @@
 @import "base/variables";
 @import "base/typography";
 @import "pages/login";
-// Contenedor de la contraseña con el icono de ojo
+// Contenedor del campo de contraseña con el icono
 .password-container {
     position: relative;
     display: flex;
     align-items: center;
     input {
-        flex: 1;
+        width: 100%;
+        padding: 10px;
         padding-right: 40px; // Espacio para el icono
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
     }
+    // Icono del ojo
     .toggle-password {
         position: absolute;
         right: 10px;
         cursor: pointer;
         font-size: 18px;
-        color: #666;
+        color: #555;
         transition: color 0.3s ease;
         &:hover {
-            color: #333;
+            color: #007bff; // Azul al pasar el ratón
         }
-        &.active {
-            color: #007bff; // Color azul cuando está activado
+        &:active {
+            color: #0056b3; // Azul más oscuro al hacer clic, sin cambiar tamaño
         }
     }
 }
