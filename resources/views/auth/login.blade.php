@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="auth-container">
         <h1 class="no-select">Iniciar Sesión</h1>
 
         @if (session('message'))

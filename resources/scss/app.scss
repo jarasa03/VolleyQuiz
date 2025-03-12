@@ -1,18 +1,21 @@
 @import "base/variables";
 @import "base/typography";
-@import "pages/login";
+@import "pages/auth";
 // Contenedor del campo de contraseña con el icono
 .password-container {
     position: relative;
     display: flex;
     align-items: center;
+    width: 100%;
     input {
-        width: 100%;
+        flex: 1; // Hace que el input ocupe el espacio disponible
+        width: 100%; // Garantiza que el ancho sea consistente con otros inputs
         padding: 10px;
         padding-right: 40px; // Espacio para el icono
         border: 1px solid #ccc;
         border-radius: 5px;
         font-size: 16px;
+        box-sizing: border-box; // Evita que el padding afecte el ancho total
     }
     // Icono del ojo
     .toggle-password {
@@ -33,4 +36,47 @@
 
 .no-select {
     user-select: none; // Evita que el texto se seleccione
+}
+
+// **ESTILOS GLOBALES PARA TODAS LAS ALERTAS**
+.alert {
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.05);
+    &.alert-info {
+        background: $color-info-bg;
+        border-left: 5px solid $color-info;
+        color: $color-info;
+    }
+    &.alert-warning {
+        background: $color-warning-bg;
+        border-left: 5px solid $color-warning;
+        color: $color-warning;
+    }
+    &.alert-danger {
+        background: $color-danger-bg;
+        border-left: 5px solid $color-accent;
+        color: $color-danger;
+    }
+    &.alert-success {
+        background: $color-success-bg;
+        border-left: 5px solid $color-success;
+        color: $color-success;
+    }
+    span {
+        font-size: 18px;
+        font-weight: bold;
+    }
+}
+
+// Asegurar que todos los inputs tengan el mismo ancho en auth-container
+.auth-container input {
+    width: 100%;
+    box-sizing: border-box; // Se asegura de que el padding no modifique el tamaño total
 }

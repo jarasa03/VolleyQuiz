@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="auth-container">
         <h1 class="no-select">Registro</h1>
 
         <!-- Mensajes de error -->

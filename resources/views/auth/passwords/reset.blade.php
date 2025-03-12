@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,15 +9,25 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="auth-container">
         <h1 class="no-select">Restablecer Contraseña</h1>
 
         @if (session('message'))
-            <div class="alert alert-info">{{ session('message') }}</div>
+            <div class="alert alert-info"> <!-- Azul para info -->
+                {{ session('message') }}
+            </div>
+        @endif
+
+        @if (session('warning'))
+            <div class="alert alert-warning"> <!-- Amarillo para advertencias -->
+                {{ session('warning') }}
+            </div>
         @endif
 
         @if (session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
+            <div class="alert alert-danger"> <!-- Rojo para errores -->
+                {{ session('error') }}
+            </div>
         @endif
 
         <form action="{{ route('password.update') }}" method="POST">
@@ -35,7 +46,8 @@
             <label for="password_confirmation" class="no-select">Confirmar Contraseña:</label>
             <div class="password-container">
                 <input type="password" id="password_confirmation" name="password_confirmation" required>
-                <span class="toggle-password no-select" onclick="togglePasswordVisibility('password_confirmation')">👁️</span>
+                <span class="toggle-password no-select"
+                    onclick="togglePasswordVisibility('password_confirmation')">👁️</span>
             </div>
 
             <button type="submit" class="no-select">Restablecer Contraseña</button>
@@ -44,4 +56,5 @@
         <p class="no-select"><a href="{{ route('auth.login') }}">Volver al inicio de sesión</a></p>
     </div>
 </body>
+
 </html>

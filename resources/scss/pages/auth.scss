@@ -1,0 +1,96 @@
+@import "../base/variables"; // Importamos las variables antes de usarlas
+// Estilos generales para los contenedores de autenticación
+.auth-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 30px;
+    padding-top: 24px;
+    background: $color-light;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 400px;
+    h1 {
+        color: $color-dark;
+        font-size: 24px;
+        margin-bottom: 20px;
+        margin-top: 0px;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        label {
+            text-align: left;
+            font-size: 14px;
+            font-weight: bold;
+            color: $color-dark;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border 0.3s ease;
+            &:focus {
+                border-color: $color-primary;
+                outline: none;
+            }
+        }
+        .password-container {
+            position: relative;
+            input {
+                padding-right: 40px;
+            }
+            .toggle-password {
+                right: 10px;
+                color: $color-primary;
+            }
+        }
+        button {
+            background: $color-primary;
+            color: white;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            &:hover {
+                background: darken($color-primary, 10%);
+            }
+        }
+    }
+    p {
+        font-size: 14px;
+        color: $color-dark;
+        margin-top: 10px;
+        a {
+            color: $color-accent;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+            &:hover {
+                color: darken($color-accent, 10%);
+            }
+        }
+    }
+}
+
+// **Nuevo fondo con degradado**
+body {
+    background: $auth-bg-gradient;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+// Responsividad
+@media (max-width: 500px) {
+    .auth-container {
+        max-width: 90%;
+    }
+}

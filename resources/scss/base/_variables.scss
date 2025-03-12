@@ -1,0 +1,17 @@
+// 🎨 Colores de la marca
+$color-primary: #5762d5; // Azul principal
+$color-secondary: #f4d35e; // Amarillo secundario
+$color-accent: #ce2d4f; // Rojo de la marca
+$color-dark: #070600; // Negro oscuro
+$color-light: #f7f7ff; // Blanco claro
+// 🎨 Colores auxiliares
+$color-success: #155724;
+$color-success-bg: #d4edda;
+$color-danger: #721c24;
+$color-danger-bg: #f8d7da;
+$color-warning: #856404;
+$color-warning-bg: #fff3cd;
+$color-info: #0c5460;
+$color-info-bg: #d1ecf1;
+// 🎨 Fondo de autenticación
+$auth-bg-gradient: linear-gradient( 135deg, $color-primary, darken($color-primary, 20%));
