@@ -14,4 +14,8 @@ $color-warning-bg: #fff3cd;
 $color-info: #0c5460;
 $color-info-bg: #d1ecf1;
 // 🎨 Fondo de autenticación
-$auth-bg-gradient: linear-gradient( 135deg, $color-primary, darken($color-primary, 20%));
+$auth-bg-gradient: linear-gradient(
+    135deg,
+    $color-primary,
+    darken($color-primary, 20%)
+);
