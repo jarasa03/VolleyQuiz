@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
+use App\Models\User;
 
 Route::get('/', function () {
     return view('welcome');
@@ -51,23 +52,26 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('auth.register');
 Route::post('/register', [AuthController::class, 'webRegister'])->name('auth.register.post');
 
-// Ruta para manejar la verificación del email y redirigir al dashboard
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request, $id, $hash) {
-    $user = \App\Models\User::find($id);
+Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
+    // Buscar el usuario en la base de datos
+    $user = User::find($id);
 
+    // Si el usuario no existe, mostrar un mensaje claro
     if (!$user) {
-        return redirect()->route('auth.login')->with('error', '❌ Usuario no encontrado.');
+        return redirect()->route('auth.login')->with('error', '❌ Enlace de verificación inválido o caducado.');
     }
 
+    // Validar que el hash del enlace coincida con el email del usuario
     if (!hash_equals(sha1($user->getEmailForVerification()), $hash)) {
         return redirect()->route('auth.login')->with('error', '❌ Enlace de verificación no válido.');
     }
 
-    if ($user->hasVerifiedEmail()) {
-        return redirect()->route('auth.login')->with('warning', '⚠️ El email ya ha sido verificado.');
+    // Si el usuario ya ha verificado su email, redirigir con advertencia
+    if ($user->email_verified_at !== null) { // ⚠️ Evita usar hasVerifiedEmail() si no está en sesión
+        return redirect()->route('auth.login')->with('warning', '⚠️ Tu correo ya estaba verificado.');
     }
 
-    // Marcar como verificado
+    // Verificar el email y guardar los cambios
     $user->markEmailAsVerified();
 
     return redirect()->route('auth.login')->with('message', '✅ ¡Email verificado con éxito! Ahora puedes iniciar sesión.');
