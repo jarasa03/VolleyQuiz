@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
-    @vite(['resources/scss/app.scss'])
+    @vite(['resources/scss/app.scss', 'resources/js/app.js'])
 </head>
+
 <body>
     <div class="container">
-        <h1>Registro</h1>
+        <h1 class="no-select">Registro</h1>
 
         <!-- Mensajes de error -->
         @if ($errors->any())
@@ -30,22 +32,30 @@
 
         <form action="{{ route('auth.register.post') }}" method="POST">
             @csrf
-            <label for="name">Nombre de Usuario:</label>
+            <label for="name" class="no-select">Nombre de Usuario:</label>
             <input type="text" id="name" name="name" required>
 
-            <label for="email">Correo Electrónico:</label>
+            <label for="email" class="no-select">Correo Electrónico:</label>
             <input type="email" id="email" name="email" required>
 
-            <label for="password">Contraseña:</label>
-            <input type="password" id="password" name="password" required>
+            <label for="password" class="no-select">Contraseña:</label>
+            <div class="password-container">
+                <input type="password" id="password" name="password" required>
+                <span class="toggle-password no-select" onclick="togglePasswordVisibility('password')">👁️</span>
+            </div>
 
-            <label for="password_confirmation">Confirmar Contraseña:</label>
-            <input type="password" id="password_confirmation" name="password_confirmation" required>
+            <label for="password_confirmation" class="no-select">Confirmar Contraseña:</label>
+            <div class="password-container">
+                <input type="password" id="password_confirmation" name="password_confirmation" required>
+                <span class="toggle-password no-select"
+                    onclick="togglePasswordVisibility('password_confirmation')">👁️</span>
+            </div>
 
-            <button type="submit">Registrarse</button>
+            <button type="submit" class="no-select">Registrarse</button>
         </form>
 
-        <p>¿Ya tienes cuenta? <a href="{{ route('auth.login') }}">Inicia sesión aquí</a></p>
+        <p class="no-select">¿Ya tienes cuenta? <a href="{{ route('auth.login') }}">Inicia sesión aquí</a></p>
     </div>
 </body>
+
 </html>

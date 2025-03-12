@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión</title>
-    @vite(['resources/scss/app.scss'])
+    @vite(['resources/scss/app.scss', 'resources/js/app.js'])
 </head>
 
 <body>
     <div class="container">
-        <h1>Iniciar Sesión</h1>
+        <h1 class="no-select">Iniciar Sesión</h1>
 
         @if (session('message'))
             <div class="alert alert-info"> <!-- Azul para info -->
@@ -30,7 +30,6 @@
             </div>
         @endif
 
-
         <!-- Mostrar errores de validación -->
         @if ($errors->any())
             <div class="alert alert-danger">
@@ -44,14 +43,19 @@
 
         <form action="{{ route('auth.login.post') }}" method="POST">
             @csrf
-            <label for="name">Nombre de Usuario:</label>
+            <label for="name" class="no-select">Nombre de Usuario:</label>
             <input type="text" id="name" name="name" required>
 
-            <label for="password">Contraseña:</label>
-            <input type="password" id="password" name="password" required>
+            <label for="password" class="no-select">Contraseña:</label>
+            <div class="password-container">
+                <input type="password" id="password" name="password" required>
+                <span class="toggle-password no-select" onclick="togglePasswordVisibility('password')">👁️</span>
+            </div>
 
-            <button type="submit">Iniciar Sesión</button>
+            <button type="submit" class="no-select">Iniciar Sesión</button>
         </form>
+
+        <p class="no-select">¿No tienes cuenta? <a href="{{ route('auth.register') }}">Regístrate aquí</a></p>
     </div>
 </body>
 
