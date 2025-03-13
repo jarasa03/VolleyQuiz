@@ -45,8 +45,9 @@
     border-radius: 5px;
     font-size: 14px;
     display: flex;
-    align-items: center;
-    gap: 10px;
+    flex-direction: column; // Apilar elementos verticalmente
+    align-items: flex-start; // Alinear a la izquierda
+    align-items: left;
     font-weight: 500;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.05);
     &.alert-info {
@@ -79,4 +80,12 @@
 .auth-container input {
     width: 100%;
     box-sizing: border-box; // Se asegura de que el padding no modifique el tamaño total
+}
+
+input[type="password"]::-ms-reveal, // Para Edge
+input[type="password"]::-ms-clear, // Para Edge
+input[type="password"]::-webkit-contacts-auto-fill-button, // Para Chrome
+input[type="password"]::-webkit-credentials-auto-fill-button {
+    display: none !important;
+    visibility: hidden !important;
 }

@@ -25,11 +25,25 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        // Validación de los datos de entrada
+
+        // Validación de los datos de entrada con mensajes personalizados
         $request->validate([
-            'name' => 'required|string|max:255|unique:users',
+            'name' => 'required|string|min:3|max:20|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
+        ], [
+            'name.required' => '❌ El nombre de usuario es obligatorio.',
+            'name.min' => '⚠️ El nombre de usuario debe tener al menos 3 caracteres.',
+            'name.max' => '⚠️ El nombre de usuario no puede tener más de 20 caracteres.',
+            'name.unique' => '❌ Este nombre de usuario ya está en uso.',
+
+            'email.required' => '❌ El correo electrónico es obligatorio.',
+            'email.email' => '⚠️ Ingresa un correo válido.',
+            'email.max' => '⚠️ El correo no puede tener más de 255 caracteres.',
+            'email.unique' => '❌ Este correo ya está registrado.',
+
+            'password.required' => '❌ La contraseña es obligatoria.',
+            'password.min' => '⚠️ La contraseña debe tener al menos 6 caracteres.',
         ]);
 
         // Crear el usuario en la base de datos
@@ -135,20 +149,22 @@ class AuthController extends Controller
         $credentials = $request->validate([
             'name' => 'required|string',
             'password' => 'required|string',
+        ], [
+            'name.required' => '❌ El nombre de usuario es obligatorio.',
+            'password.required' => '❌ La contraseña es obligatoria.',
         ]);
 
         // Intentar autenticar al usuario con las credenciales proporcionadas.
-        if (Auth::guard('web')->attempt($credentials)) {
-            // Regenerar la sesión para proteger contra ataques de fijación de sesión.
-            $request->session()->regenerate();
-
-            // Redirigir al dashboard con un mensaje de éxito.
-            return redirect()->route('dashboard')->with('success', 'Inicio de sesión exitoso.');
+        if (!Auth::guard('web')->attempt($credentials)) {
+            return back()->with('error', '❌ Usuario o contraseña incorrectos.');
         }
 
-        // Si la autenticación falla, redirigir de vuelta con un mensaje de error.
-        return back()->with('error', '❌ Usuario o contraseña incorrectos.');
+        // Regenerar la sesión para proteger contra ataques de fijación de sesión.
+        $request->session()->regenerate();
+
+        return redirect()->route('dashboard')->with('success', '✅ Inicio de sesión exitoso.');
     }
+
 
     /**
      * Muestra el formulario de registro.
@@ -168,7 +184,7 @@ class AuthController extends Controller
     {
         // Validar los datos antes de enviarlos a la API
         $request->validate([
-            'name' => 'required|string|max:255|unique:users',
+            'name' => 'required|string|min:3|max:20|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
         ]);
@@ -188,60 +204,73 @@ class AuthController extends Controller
     }
 
     /**
- * Muestra la vista del formulario de solicitud de recuperación de contraseña.
- */
-public function showForgotPasswordForm()
-{
-    return view('auth.passwords.email');
-}
+     * Muestra la vista del formulario de solicitud de recuperación de contraseña.
+     */
+    public function showForgotPasswordForm()
+    {
+        return view('auth.passwords.email');
+    }
 
-/**
- * Maneja el envío del enlace de recuperación de contraseña al email del usuario.
- */
-public function sendResetLinkEmail(Request $request)
-{
-    $request->validate(['email' => 'required|email']);
+    /**
+     * Maneja el envío del enlace de recuperación de contraseña al email del usuario.
+     */
+    public function sendResetLinkEmail(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ], [
+            'email.required' => '❌ El correo electrónico es obligatorio.',
+            'email.email' => '⚠️ Ingresa un correo válido.',
+        ]);
 
-    $status = Password::sendResetLink($request->only('email'));
+        $status = Password::sendResetLink($request->only('email'));
 
-    return $status === Password::RESET_LINK_SENT
-        ? back()->with('message', '📩 Se ha enviado un enlace a tu correo.')
-        : back()->with('error', '❌ No se pudo enviar el enlace de recuperación.');
-}
+        return $status === Password::RESET_LINK_SENT
+            ? back()->with('message', '📩 Se ha enviado un enlace a tu correo.')
+            : back()->with('error', '❌ No se pudo enviar el enlace de recuperación.');
+    }
 
-/**
- * Muestra el formulario de restablecimiento de contraseña.
- */
-public function showResetPasswordForm($token)
-{
-    return view('auth.passwords.reset', ['token' => $token]);
-}
 
-/**
- * Maneja la actualización de la contraseña después de recibir el enlace de recuperación.
- */
-public function resetPassword(Request $request)
-{
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required|string|min:6|confirmed',
-        'token' => 'required'
-    ]);
+    /**
+     * Muestra el formulario de restablecimiento de contraseña.
+     */
+    public function showResetPasswordForm($token)
+    {
+        return view('auth.passwords.reset', ['token' => $token]);
+    }
 
-    $status = Password::reset(
-        $request->only('email', 'password', 'password_confirmation', 'token'),
-        function ($user, $password) {
-            $user->forceFill([
-                'password' => Hash::make($password),
-                'remember_token' => Str::random(60),
-            ])->save();
+    /**
+     * Maneja la actualización de la contraseña después de recibir el enlace de recuperación.
+     */
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string|min:6|confirmed',
+            'token' => 'required',
+        ], [
+            'email.required' => '❌ El correo electrónico es obligatorio.',
+            'email.email' => '⚠️ Ingresa un correo válido.',
+            'password.required' => '❌ La nueva contraseña es obligatoria.',
+            'password.min' => '⚠️ La contraseña debe tener al menos 6 caracteres.',
+            'password.confirmed' => '❌ Las contraseñas no coinciden.',
+            'token.required' => '❌ El enlace de restablecimiento no es válido.',
+        ]);
 
-            event(new PasswordReset($user));
-        }
-    );
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password),
+                    'remember_token' => Str::random(60),
+                ])->save();
 
-    return $status === Password::PASSWORD_RESET
-        ? redirect()->route('auth.login')->with('message', '✅ Tu contraseña ha sido restablecida.')
-        : back()->with('error', '❌ No se pudo restablecer la contraseña.');
-}
+                event(new PasswordReset($user));
+            }
+        );
+
+        return $status === Password::PASSWORD_RESET
+            ? redirect()->route('auth.login')->with('message', '✅ Tu contraseña ha sido restablecida.')
+            : back()->with('error', '❌ No se pudo restablecer la contraseña.');
+    }
 }
