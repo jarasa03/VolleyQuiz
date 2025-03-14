@@ -1,6 +1,7 @@
 @import "base/variables";
 @import "base/typography";
 @import "pages/auth";
+@import "components/navbar";
 // Contenedor del campo de contraseña con el icono
 .password-container {
     position: relative;
@@ -80,6 +81,10 @@
 .auth-container input {
     width: 100%;
     box-sizing: border-box; // Se asegura de que el padding no modifique el tamaño total
+}
+
+.has-navbar .main-content {
+    margin-top: 120px; // Ajusta este valor según la altura de la navbar
 }
 
 input[type="password"]::-ms-reveal, // Para Edge

@@ -9,16 +9,14 @@
         <a href="#" class="navbar__link">Niveles</a>
         <a href="#" class="navbar__link">Ranking</a>
 
-        <!-- Perfil desplegable -->
+        <!-- Perfil y Cerrar Sesión -->
         <div class="navbar__profile">
-            <button class="navbar__profile-btn">{{ auth()->user()->name }} ⬇</button>
-            <div class="navbar__dropdown">
-                <a href="#" class="navbar__dropdown-item">Editar perfil</a>
-                <form action="{{ route('auth.logout') }}" method="POST" class="navbar__logout-form">
-                    @csrf
-                    <button type="submit" class="navbar__logout-btn">Cerrar sesión</button>
-                </form>
-            </div>
+            <a href="{{ route('users.perfil') }}" class="navbar__profile-btn">{{ auth()->user()->name }}</a>
         </div>
+
+        <form action="{{ route('auth.logout') }}" method="POST" class="navbar__logout-form">
+            @csrf
+            <button type="submit" class="navbar__logout-btn">Cerrar sesión</button>
+        </form>
     </div>
 </nav>

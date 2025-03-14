@@ -1,0 +1,82 @@
+@import "../base/variables"; // Importar las variables antes de usarlas
+.navbar {
+    background: $color-primary; // Usa el azul principal
+    color: $color-light;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    &__logo a {
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-decoration: none;
+        color: $color-light;
+        transition: 0.3s;
+        &:hover {
+            color: $color-secondary; // Amarillo al pasar el mouse
+        }
+    }
+    &__links {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        @media (max-width: 768px) {
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: $color-primary;
+            padding: 10px 0;
+            display: none; // Se oculta en móviles por defecto
+        }
+    }
+    &__link {
+        color: $color-light;
+        text-decoration: none;
+        font-weight: 500;
+        transition: 0.3s;
+        &:hover {
+            color: $color-secondary;
+        }
+    }
+    // Perfil del usuario
+    &__profile {
+        display: flex;
+        align-items: center;
+    }
+    &__profile-btn {
+        color: $color-light;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
+        &:hover {
+            color: $color-secondary;
+        }
+    }
+    // Botón de Cerrar Sesión bien alineado
+    &__logout-form {
+        display: inline-block;
+        margin-left: 15px;
+        margin-right: 45px;
+    }
+    &__logout-btn {
+        background: $color-accent; // Rojo para el botón de cerrar sesión
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 14px;
+        &:hover {
+            background: darken($color-accent, 10%);
+        }
+    }
+}

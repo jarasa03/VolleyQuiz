@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Http\Controllers\UsersController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -82,3 +83,5 @@ Route::post('/password/email', [AuthController::class, 'sendResetLinkEmail'])->n
 
 Route::get('/password/reset/{token}', [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
 Route::post('/password/reset', [AuthController::class, 'resetPassword'])->name('password.update');
+
+Route::get('/perfil', [UsersController::class, 'verPerfil'])->name('users.perfil');
