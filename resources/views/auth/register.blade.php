@@ -1,14 +1,10 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro</title>
-    @vite(['resources/scss/app.scss', 'resources/js/app.js'])
-</head>
+@section('title', 'Registro')
 
-<body>
+@push('body-class', 'auth-page')
+
+@section('content')
     <div class="auth-container">
         <h1 class="no-select">Registro</h1>
 
@@ -20,7 +16,6 @@
                 @endforeach
             </div>
         @endif
-
 
         <!-- Mensaje de éxito si se registra correctamente -->
         @if (session('success'))
@@ -55,6 +50,4 @@
 
         <p class="no-select">¿Ya tienes cuenta? <a href="{{ route('auth.login') }}">Inicia sesión aquí</a></p>
     </div>
-</body>
-
-</html>
+@endsection

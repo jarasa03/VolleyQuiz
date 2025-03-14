@@ -78,8 +78,8 @@
     }
 }
 
-// **Nuevo fondo con degradado**
-body {
+// Solo aplicamos los estilos al body cuando es una página de autenticación
+.auth-page {
     background: $auth-bg-gradient;
     min-height: 100vh;
     display: flex;

@@ -1,15 +1,10 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-</head>
-<body>
-    <h1>Bienvenido, {{ auth()->user()->name }} 🎉</h1>
-    <form action="{{ route('auth.logout') }}" method="POST" style="display:inline;">
-        @csrf
-        <button type="submit">Cerrar sesión</button>
-    </form>    
-</body>
-</html>
+@extends('layouts.app')
+
+@section('title', 'Dashboard')
+
+@section('content')
+    <main class="main-content">
+        <h1>Bienvenido al Dashboard 🎉</h1>
+        <p>Desde aquí puedes acceder a todas las secciones de la plataforma.</p>
+    </main>
+@endsection

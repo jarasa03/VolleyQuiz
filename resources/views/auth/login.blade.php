@@ -1,14 +1,10 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión</title>
-    @vite(['resources/scss/app.scss', 'resources/js/app.js'])
-</head>
+@section('title', 'Iniciar Sesión')
 
-<body>
+@push('body-class', 'auth-page')
+
+@section('content')
     <div class="auth-container">
         <h1 class="no-select">Iniciar Sesión</h1>
 
@@ -58,6 +54,4 @@
         <p class="no-select">¿No tienes cuenta? <a href="{{ route('auth.register') }}">Regístrate aquí</a></p>
         <p class="no-select"><a href="{{ route('password.request') }}">¿Olvidaste tu contraseña?</a></p>
     </div>
-</body>
-
-</html>
+@endsection
