@@ -1,18 +1,29 @@
-@import "../base/variables"; // Importar las variables antes de usarlas
+@import "../base/variables";
+@import "../base/typography";
+#navbar__title {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: xx-large;
+    font-weight: 100;
+    letter-spacing: 10px;
+}
+
 .navbar {
     background: $color-primary; // Usa el azul principal
     color: $color-light;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
     padding: 15px 30px;
     position: fixed;
+    max-width: 100vw;
+    overflow: hidden;
     width: 100%;
     top: 0;
     left: 0;
     z-index: 1000;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     &__logo a {
+        justify-self: start;
         font-size: 1.5rem;
         font-weight: bold;
         text-decoration: none;
@@ -25,7 +36,9 @@
     &__links {
         display: flex;
         align-items: center;
-        gap: 20px;
+        justify-content: center;
+        gap: 40px;
+        letter-spacing: 2px;
         @media (max-width: 768px) {
             flex-direction: column;
             position: absolute;
@@ -46,10 +59,12 @@
             color: $color-secondary;
         }
     }
-    // Perfil del usuario
-    &__profile {
+    // Sección derecha (perfil y botón de cerrar sesión)
+    &__profile-actions {
         display: flex;
+        justify-content: flex-end; // Alinea el contenido a la derecha
         align-items: center;
+        gap: 20px;
     }
     &__profile-btn {
         color: $color-light;
@@ -63,20 +78,37 @@
     // Botón de Cerrar Sesión bien alineado
     &__logout-form {
         display: inline-block;
-        margin-left: 15px;
-        margin-right: 45px;
     }
     &__logout-btn {
-        background: $color-accent; // Rojo para el botón de cerrar sesión
+        background: $color-accent;
         color: white;
         border: none;
         padding: 6px 12px;
         border-radius: 5px;
         cursor: pointer;
         transition: 0.3s;
-        font-size: 14px;
+        font-size: 16px;
+        font-family: inherit;
+        font-weight: 700;
+        letter-spacing: 2px;
+        margin-right: 70px;
         &:hover {
             background: darken($color-accent, 10%);
         }
     }
+}
+
+.navbar__links,
+.navbar__profile-actions {
+    margin: 0;
+    padding: 0;
+}
+
+.navbar__links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap; // ✅ Si los enlaces son muchos, que bajen de línea en pantallas pequeñas
+    gap: 20px;
+    overflow: hidden;
+    max-width: 100%;
 }

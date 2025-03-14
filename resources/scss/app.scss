@@ -2,6 +2,12 @@
 @import "base/typography";
 @import "pages/auth";
 @import "components/navbar";
+* {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+        sans-serif;
+}
+
 // Contenedor del campo de contraseña con el icono
 .password-container {
     position: relative;
@@ -48,7 +54,6 @@
     display: flex;
     flex-direction: column; // Apilar elementos verticalmente
     align-items: flex-start; // Alinear a la izquierda
-    align-items: left;
     font-weight: 500;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.05);
     &.alert-info {
