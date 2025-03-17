@@ -35,7 +35,6 @@ Route::get('/login', function () {
 
 Route::post('/login', [AuthController::class, 'webLogin'])->name('auth.login.post');
 
-
 // Ruta para mostrar el login
 Route::get('/login', [AuthController::class, 'showLogin'])->name('auth.login');
 
@@ -89,11 +88,12 @@ Route::post('/password/reset', [AuthController::class, 'resetPassword'])->name('
 
 Route::get('/perfil', [UsersController::class, 'verPerfil'])->name('users.perfil');
 
+// Rutas de administración protegidas por autenticación
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
 });
 
-// Agrupamos las rutas de administración
+// Agrupamos las rutas de administración bajo el prefijo "admin" y protegemos con autenticación
 Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
@@ -107,4 +107,38 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     // Administración de preguntas y tags (accesible para admin y superadmin)
     Route::get('/questions', [QuestionsController::class, 'index'])->name('admin.questions');
     Route::get('/tags', [TagsController::class, 'index'])->name('admin.tags');
+});
+// Rutas protegidas manualmente para administración
+Route::prefix('admin')->middleware('auth')->group(function () {
+    // Ruta para el dashboard
+    Route::get('/dashboard', function () {
+        if (!Auth::check()) {
+            return redirect()->route('auth.login')->with('error', '❌ Debes iniciar sesión antes de acceder.');
+        }
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+
+    // Ruta para obtener los usuarios
+    Route::get('/users', [UsersController::class, 'index'])->name('admin.users'); // Cambié la función a la del controlador
+
+    // Usar el controlador para editar un usuario
+    Route::get('/users/{id}/edit', [UsersController::class, 'edit'])->name('admin.users.edit'); // Cambié a la función del controlador
+
+    // Ruta para actualizar un usuario
+    Route::put('/users/{id}', function ($id) {
+        if (!Auth::check()) {
+            return redirect()->route('auth.login')->with('error', '❌ Debes iniciar sesión antes de acceder.');
+        }
+        // Aquí llamarías al controlador para actualizar el usuario
+        return app(UsersController::class)->update(request(), $id);
+    })->name('admin.users.update');
+
+    // Ruta para eliminar un usuario
+    Route::delete('/users/{id}', function ($id) {
+        if (!Auth::check()) {
+            return redirect()->route('auth.login')->with('error', '❌ Debes iniciar sesión antes de acceder.');
+        }
+        // Aquí llamarías al controlador para eliminar el usuario
+        return app(UsersController::class)->destroy($id);
+    })->name('admin.users.delete');
 });

@@ -1,0 +1,165 @@
+@import "../base/variables"; // Importar las variables de color
+.admin-users-container {
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 30px;
+    background: $color-light;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
+    h1 {
+        color: $color-dark;
+        font-size: 26px;
+        margin-bottom: 20px;
+    }
+    .user-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: $color-primary;
+            color: white;
+        }
+        tr:hover {
+            background: lighten($color-primary, 40%);
+        }
+    }
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-size: 14px;
+            &.edit {
+                background: $color-secondary;
+                color: $color-dark;
+                &:hover {
+                    background: darken($color-secondary, 10%);
+                }
+            }
+            &.delete {
+                background: $color-accent;
+                color: white;
+                &:hover {
+                    background: darken($color-accent, 10%);
+                }
+            }
+        }
+    }
+}
+
+// Estilo general de la página de administración de usuarios
+.admin-users-page {
+    background: $auth-bg-gradient;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.container {
+    width: 100%;
+}
+
+.user-table thead th:last-child {
+    text-align: center !important;
+}
+
+@media (max-width: 768px) {
+    .admin-users-container {
+        max-width: 90%;
+    }
+    .user-table th,
+    .user-table td {
+        padding: 8px;
+        font-size: 14px;
+    }
+}
+
+body {
+    overflow: auto !important;
+}
+
+/* Asegúrate de que la paginación esté centrada */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    /* Centrado horizontal */
+    align-items: center;
+    /* Centrado vertical */
+    list-style: none;
+    margin: 20px auto;
+    /* Espaciado y centrado */
+    padding: 0;
+}
+
+/* Estilos de los elementos de la paginación */
+
+.pagination li {
+    margin: 0 5px;
+}
+
+.pagination .page-link {
+    font-size: 14px;
+    /* Tamaño de la fuente más pequeño */
+    padding: 8px 12px;
+    /* Ajuste de los botones */
+    border-radius: 5px;
+    text-align: center;
+    display: inline-block;
+    color: $color-primary;
+    /* Ajustar al color deseado */
+    border: 1px solid #ccc;
+    /* Borde ligero */
+    transition: background-color 0.3s ease;
+}
+
+/* Efecto al pasar el ratón */
+
+.pagination .page-link:hover {
+    background-color: #f4f4f4;
+}
+
+/* Flechas y botones */
+
+.pagination .page-item .page-link {
+    padding: 6px 10px;
+    font-size: 14px;
+}
+
+.pagination .next svg,
+.pagination .prev svg {
+    width: 16px;
+    height: 16px;
+    /* Reducir tamaño de las flechas */
+}
+
+/* Para mejorar la visibilidad de la página activa */
+
+.pagination .active .page-link {
+    background-color: $color-primary;
+    /* Ajustar al color deseado */
+    color: white;
+    border-color: $color-primary;
+}
+
+/* Cambiar el estilo de la página deshabilitada */
+
+.pagination .disabled .page-link {
+    color: #ccc;
+    pointer-events: none;
+}

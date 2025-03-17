@@ -23,8 +23,13 @@ class UsersController extends Controller
             return response()->json(['message' => 'Acceso denegado - No eres admin'], 403);
         }
 
-        return response()->json(User::all(), 200);
+        // Cambié 'User::paginate(10)' por 'User::orderBy('name')->paginate(10)' para tener un orden claro en la lista
+        $users = User::orderBy('name')->paginate(10);
+
+        // Devolver la vista 'admin.users' con la variable 'users'
+        return view('admin.users', compact('users'));
     }
+
 
     /**
      * Obtiene la información de un usuario por su ID.
@@ -86,17 +91,22 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Obtener el usuario autenticado
         $authUser = $this->getAuthenticatedUser();
+
+        // Buscar el usuario a actualizar
         $user = User::find($id);
 
         if (!$user) {
-            return response()->json(['message' => 'Usuario no encontrado'], 404);
+            return redirect()->route('admin.users')->with('error', '❌ Usuario no encontrado');
         }
 
+        // Verificar si el usuario autenticado puede editar este usuario
         if ($authUser->id !== $user->id && !$authUser->isAdmin()) {
-            return response()->json(['message' => 'Acceso denegado'], 403);
+            return redirect()->route('admin.users')->with('error', '❌ Acceso denegado');
         }
 
+        // Validación de los datos del formulario
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|string|max:255',
             'email' => 'sometimes|string|email|max:255|unique:users,email,' . $id,
@@ -105,22 +115,29 @@ class UsersController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            return redirect()->route('admin.users.edit', $id)
+                ->withErrors($validator)
+                ->withInput();
         }
 
+        // Actualizar el rol si el usuario es Superadmin y si se pasó un rol en la solicitud
         if ($authUser->isSuperAdmin() && $request->has('role')) {
             $user->role = $request->role;
         }
 
+        // Actualizar los campos del usuario
         $user->update($request->only(['name', 'email']));
 
+        // Si se pasa una nueva contraseña, se actualiza también
         if ($request->has('password')) {
             $user->password = Hash::make($request->password);
             $user->save();
         }
 
-        return response()->json($user, 200);
+        // Redirigir al listado de usuarios con un mensaje de éxito
+        return redirect()->route('admin.users')->with('message', '✅ Usuario actualizado correctamente');
     }
+
 
     /**
      * Elimina un usuario de la base de datos.
@@ -131,24 +148,25 @@ class UsersController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return response()->json(['message' => 'Usuario no encontrado'], 404);
+            return redirect()->route('admin.users')->with('error', '❌ Usuario no encontrado');
         }
 
         if ($authUser->id === $user->id) {
-            return response()->json(['message' => 'No puedes eliminar tu propia cuenta'], 403);
+            return redirect()->route('admin.users')->with('error', '❌ No puedes eliminar tu propia cuenta');
         }
 
         if ($user->isSuperAdmin()) {
-            return response()->json(['message' => 'No puedes eliminar a un superadmin. Solo el sistema puede gestionarlos.'], 403);
+            return redirect()->route('admin.users')->with('error', '❌ No puedes eliminar a un superadmin');
         }
 
         if (!$authUser->isSuperAdmin() && $user->isAdmin()) {
-            return response()->json(['message' => 'No puedes eliminar un administrador'], 403);
+            return redirect()->route('admin.users')->with('error', '❌ No puedes eliminar un administrador');
         }
 
         $user->delete();
-        return response()->json(['message' => 'Usuario eliminado'], 200);
+        return redirect()->route('admin.users')->with('message', '✅ Usuario eliminado');
     }
+
 
     /**
      * Obtiene el usuario autenticado de la solicitud.
@@ -173,5 +191,12 @@ class UsersController extends Controller
         }
 
         return $authUser;
+    }
+
+    public function edit($id)
+    {
+        $user = User::findOrFail($id); // Obtiene el usuario por su ID
+
+        return view('admin.edit-user', compact('user')); // Pasa el usuario a la vista
     }
 }

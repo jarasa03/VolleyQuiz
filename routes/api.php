@@ -114,7 +114,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 // Esto soluciona el error "Route [login] not defined."
 Route::get('/login', function () {
-    return response()->json(['message' => 'Debes iniciar sesión'], 401);
+    return redirect()->route('auth.login')->with('error', '❌ Debes iniciar sesión antes de acceder.');
 })->name('login');
 
 // Ruta para reenviar el correo de verificación

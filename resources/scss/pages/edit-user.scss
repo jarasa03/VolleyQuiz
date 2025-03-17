@@ -1,0 +1,104 @@
+@import "../base/variables"; // Importar las variables de color
+// Estilos para la página de edición de usuario
+.edit-user-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    background: $color-light;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: left; // Alineamos el texto a la izquierda
+    width: 100%;
+    // Título de la página
+    h1 {
+        color: $color-dark;
+        font-size: 26px;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+    // Estilos para los campos de formulario
+    .form-group {
+        margin-bottom: 25px; // Aumentamos el espacio entre campos
+        label {
+            font-size: 16px;
+            color: $color-dark;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+        }
+        input,
+        select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border 0.3s ease;
+            margin-bottom: 15px;
+            &:focus {
+                border-color: $color-primary;
+                outline: none;
+            }
+        }
+    }
+    // Estilos para los botones de acción
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+            &.submit {
+                background: $color-primary;
+                color: white;
+                &:hover {
+                    background: darken($color-primary, 10%);
+                }
+            }
+            &.cancel {
+                background: #ccc;
+                color: #555;
+                &:hover {
+                    background: darken(#ccc, 10%);
+                }
+            }
+        }
+    }
+}
+
+// Responsividad para la edición
+@media (max-width: 768px) {
+    .edit-user-container {
+        max-width: 90%;
+        padding: 20px; // Reducir el padding en pantallas pequeñas
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .form-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+
+// Centramos verticalmente el contenedor en la página
+body,
+html {
+    height: 100%;
+    margin: 0;
+}
+
+.admin-users-page {
+    display: flex;
+    justify-content: center; // Centrado horizontal
+    align-items: center; // Centrado vertical
+    min-height: 100vh; // Asegura que el contenedor tenga altura completa de la ventana
+    padding: 0 15px; // Asegura que el contenido no toque los bordes
+    background: $auth-bg-gradient;
+}
