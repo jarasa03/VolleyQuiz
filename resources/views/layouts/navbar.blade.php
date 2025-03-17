@@ -15,11 +15,16 @@
 
     <!-- Sección Derecha: Perfil y Cerrar Sesión -->
     <div class="navbar__profile-actions">
-        <a href="{{ route('users.perfil') }}" class="navbar__profile-btn">{{ auth()->user()->name }}</a>
+        @auth
+            <a href="{{ route('users.perfil') }}" class="navbar__profile-btn">{{ auth()->user()->name }}</a>
 
-        <form action="{{ route('auth.logout') }}" method="POST" class="navbar__logout-form">
-            @csrf
-            <button type="submit" class="navbar__logout-btn">Cerrar sesión</button>
-        </form>
+            <form action="{{ route('auth.logout') }}" method="POST" class="navbar__logout-form">
+                @csrf
+                <button type="submit" class="navbar__logout-btn">Cerrar sesión</button>
+            </form>
+        @else
+            <a href="{{ route('auth.login') }}" class="navbar__profile-btn">Iniciar sesión</a>
+        @endauth
     </div>
+
 </nav>

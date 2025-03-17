@@ -1,14 +1,10 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recuperar Contraseña</title>
-    @vite(['resources/scss/app.scss'])
-</head>
+@section('title', 'Recuperar Contraseña')
 
-<body>
+@push('body-class', 'auth-page')
+
+@section('content')
     <div class="auth-container">
         <h1 class="no-select">Recuperar Contraseña</h1>
 
@@ -39,6 +35,4 @@
 
         <p class="no-select"><a href="{{ route('auth.login') }}">Volver al inicio de sesión</a></p>
     </div>
-</body>
-
-</html>
+@endsection
