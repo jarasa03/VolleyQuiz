@@ -15,36 +15,11 @@ class UsersController extends Controller
 {
     /**
      * Obtiene la lista de todos los usuarios.
-     * 
-     * Solo un usuario con rol de administrador puede acceder a esta información.
-     *
-     * @return \Illuminate\Http\JsonResponse Respuesta con la lista de usuarios o un mensaje de error.
      */
     public function index()
     {
-        // Asegurar que el usuario se autentique manualmente si Auth::user() es null
-        $user = Auth::user();
-
-        if (!$user) {
-            $token = request()->bearerToken(); // Obtener el token de la cabecera
-            if ($token) {
-                $personalAccessToken = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
-                if ($personalAccessToken) {
-                    $user = $personalAccessToken->tokenable;
-                    Auth::setUser($user); // Forzar la autenticación manualmente
-                }
-            }
-        }
-
-        if (!$user) {
-            return response()->json(['message' => 'No autenticado'], 401);
-        }
-
-        if (!method_exists($user, 'isAdmin')) {
-            return response()->json(['message' => 'El método isAdmin() no está definido en el modelo User'], 500);
-        }
-
-        if (!$user->isAdmin()) { // Bloquear si no es admin
+        $user = $this->getAuthenticatedUser();
+        if (!$user->isAdmin()) {
             return response()->json(['message' => 'Acceso denegado - No eres admin'], 403);
         }
 
@@ -53,37 +28,10 @@ class UsersController extends Controller
 
     /**
      * Obtiene la información de un usuario por su ID.
-     * 
-     * Un usuario solo puede ver su propio perfil, mientras que un administrador puede ver cualquier perfil.
-     *
-     * @param int $id ID del usuario a consultar.
-     * @return \Illuminate\Http\JsonResponse Respuesta con la información del usuario o un mensaje de error.
      */
     public function show($id)
     {
-        // Asegurar que el usuario se autentique manualmente si Auth::user() es null
-        $authUser = Auth::user();
-
-        if (!$authUser) {
-            $token = request()->bearerToken(); // Obtener el token de la cabecera
-            if ($token) {
-                $personalAccessToken = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
-                if ($personalAccessToken) {
-                    $authUser = $personalAccessToken->tokenable;
-                    Auth::setUser($authUser); // Forzar la autenticación manualmente
-                }
-            }
-        }
-
-        if (!$authUser) {
-            return response()->json(['message' => 'No autenticado'], 401);
-        }
-
-        // Verificar que el método isAdmin existe en el modelo
-        if (!method_exists($authUser, 'isAdmin')) {
-            return response()->json(['message' => 'El método isAdmin() no está definido en el modelo User'], 500);
-        }
-
+        $authUser = $this->getAuthenticatedUser();
         $user = User::find($id);
 
         if (!$user) {
@@ -97,40 +45,12 @@ class UsersController extends Controller
         return response()->json($user, 200);
     }
 
-
     /**
-     * Crea un nuevo usuario en la base de datos.
-     * 
-     * Solo un administrador puede registrar nuevos usuarios y asignarles roles específicos.
-     *
-     * @param Request $request Datos enviados en la solicitud.
-     * @return \Illuminate\Http\JsonResponse Respuesta con los datos del usuario creado o un mensaje de error.
+     * Crea un nuevo usuario.
      */
     public function store(Request $request)
     {
-        // Asegurar que el usuario se autentique manualmente si Auth::user() es null
-        $authUser = Auth::user();
-
-        if (!$authUser) {
-            $token = request()->bearerToken(); // Obtener el token de la cabecera
-            if ($token) {
-                $personalAccessToken = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
-                if ($personalAccessToken) {
-                    $authUser = $personalAccessToken->tokenable;
-                    Auth::setUser($authUser); // Forzar la autenticación manualmente
-                }
-            }
-        }
-
-        if (!$authUser) {
-            return response()->json(['message' => 'No autenticado'], 401);
-        }
-
-        // Verificar que el método isAdmin existe en el modelo
-        if (!method_exists($authUser, 'isAdmin')) {
-            return response()->json(['message' => 'El método isAdmin() no está definido en el modelo User'], 500);
-        }
-
+        $authUser = $this->getAuthenticatedUser();
         if (!$authUser->isAdmin()) {
             return response()->json(['message' => 'Acceso denegado - No eres admin'], 403);
         }
@@ -139,14 +59,17 @@ class UsersController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
-            'role' => 'sometimes|string|in:user,admin', // Solo admin puede establecer "admin"
+            'role' => 'sometimes|string|in:user,admin,superadmin',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $role = $request->has('role') ? $request->role : 'user';
+        $role = 'user';
+        if ($authUser->isSuperAdmin() && $request->has('role')) {
+            $role = $request->role;
+        }
 
         $user = User::create([
             'name' => $request->name,
@@ -158,48 +81,18 @@ class UsersController extends Controller
         return response()->json($user, 201);
     }
 
-
     /**
      * Actualiza los datos de un usuario existente.
-     * 
-     * Un usuario puede actualizar su propio perfil, mientras que un administrador puede modificar cualquier usuario.
-     *
-     * @param Request $request Datos enviados en la solicitud.
-     * @param int $id ID del usuario a actualizar.
-     * @return \Illuminate\Http\JsonResponse Respuesta con los datos actualizados o un mensaje de error.
      */
     public function update(Request $request, $id)
     {
-        // Asegurar que el usuario se autentique manualmente si Auth::user() es null
-        $authUser = Auth::user();
-
-        if (!$authUser) {
-            $token = request()->bearerToken(); // Obtener el token de la cabecera
-            if ($token) {
-                $personalAccessToken = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
-                if ($personalAccessToken) {
-                    $authUser = $personalAccessToken->tokenable;
-                    Auth::setUser($authUser); // Forzar la autenticación manualmente
-                }
-            }
-        }
-
-        if (!$authUser) {
-            return response()->json(['message' => 'No autenticado'], 401);
-        }
-
+        $authUser = $this->getAuthenticatedUser();
         $user = User::find($id);
 
         if (!$user) {
             return response()->json(['message' => 'Usuario no encontrado'], 404);
         }
 
-        // Verificar que el método isAdmin existe en el modelo
-        if (!method_exists($authUser, 'isAdmin')) {
-            return response()->json(['message' => 'El método isAdmin() no está definido en el modelo User'], 500);
-        }
-
-        // Solo el usuario autenticado o un admin pueden actualizar
         if ($authUser->id !== $user->id && !$authUser->isAdmin()) {
             return response()->json(['message' => 'Acceso denegado'], 403);
         }
@@ -208,22 +101,19 @@ class UsersController extends Controller
             'name' => 'sometimes|string|max:255',
             'email' => 'sometimes|string|email|max:255|unique:users,email,' . $id,
             'password' => 'sometimes|string|min:6',
-            'role' => 'sometimes|string|in:user,admin', // Solo admin puede cambiar roles
+            'role' => 'sometimes|string|in:user,admin,superadmin',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Solo los admins pueden cambiar roles
-        if ($authUser->isAdmin() && $request->has('role')) {
+        if ($authUser->isSuperAdmin() && $request->has('role')) {
             $user->role = $request->role;
         }
 
-        // Actualizamos los otros campos si se proporcionan
         $user->update($request->only(['name', 'email']));
 
-        // Si hay nueva contraseña, la encriptamos antes de guardarla
         if ($request->has('password')) {
             $user->password = Hash::make($request->password);
             $user->save();
@@ -232,58 +122,56 @@ class UsersController extends Controller
         return response()->json($user, 200);
     }
 
-
     /**
      * Elimina un usuario de la base de datos.
-     * 
-     * Solo un administrador puede eliminar usuarios. Ningún usuario puede eliminar su propia cuenta.
-     *
-     * @param int $id ID del usuario a eliminar.
-     * @return \Illuminate\Http\JsonResponse Respuesta con un mensaje de confirmación o error.
      */
     public function destroy($id)
     {
-        // Asegurar que el usuario se autentique manualmente si Auth::user() es null
-        $authUser = Auth::user();
-
-        if (!$authUser) {
-            $token = request()->bearerToken(); // Obtener el token de la cabecera
-            if ($token) {
-                $personalAccessToken = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
-                if ($personalAccessToken) {
-                    $authUser = $personalAccessToken->tokenable;
-                    Auth::setUser($authUser); // Forzar la autenticación manualmente
-                }
-            }
-        }
-
-        if (!$authUser) {
-            return response()->json(['message' => 'No autenticado'], 401);
-        }
-
-        // Verificar que el método isAdmin existe en el modelo
-        if (!method_exists($authUser, 'isAdmin')) {
-            return response()->json(['message' => 'El método isAdmin() no está definido en el modelo User'], 500);
-        }
-
-        // Solo los administradores pueden eliminar usuarios
-        if (!$authUser->isAdmin()) {
-            return response()->json(['message' => 'Acceso denegado - No eres admin'], 403);
-        }
-
+        $authUser = $this->getAuthenticatedUser();
         $user = User::find($id);
 
         if (!$user) {
             return response()->json(['message' => 'Usuario no encontrado'], 404);
         }
 
-        // Prevenir que un usuario se elimine a sí mismo
         if ($authUser->id === $user->id) {
             return response()->json(['message' => 'No puedes eliminar tu propia cuenta'], 403);
         }
 
-        $user->delete();
+        if ($user->isSuperAdmin()) {
+            return response()->json(['message' => 'No puedes eliminar a un superadmin. Solo el sistema puede gestionarlos.'], 403);
+        }
 
+        if (!$authUser->isSuperAdmin() && $user->isAdmin()) {
+            return response()->json(['message' => 'No puedes eliminar un administrador'], 403);
+        }
+
+        $user->delete();
         return response()->json(['message' => 'Usuario eliminado'], 200);
+    }
+
+    /**
+     * Obtiene el usuario autenticado de la solicitud.
+     */
+    private function getAuthenticatedUser()
+    {
+        $authUser = Auth::user();
+
+        if (!$authUser) {
+            $token = request()->bearerToken();
+            if ($token) {
+                $personalAccessToken = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
+                if ($personalAccessToken) {
+                    $authUser = $personalAccessToken->tokenable;
+                    Auth::setUser($authUser);
+                }
+            }
+        }
+
+        if (!$authUser) {
+            abort(response()->json(['message' => 'No autenticado'], 401));
+        }
+
+        return $authUser;
     }
 }

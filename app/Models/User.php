@@ -31,6 +31,12 @@ class User extends Authenticatable implements MustVerifyEmail // <- Implementar 
     // Método para verificar si un usuario es administrador
     public function isAdmin()
     {
-        return $this->role === 'admin';
+        return $this->role === 'admin' || $this->role === 'superadmin';
+    }
+
+    // Método exclusivo para superadmin
+    public function isSuperAdmin()
+    {
+        return $this->role === 'superadmin';
     }
 }
