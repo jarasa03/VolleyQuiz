@@ -11,6 +11,12 @@
         <a href="#" class="navbar__link">Zen</a>
         <a href="#" class="navbar__link">Niveles</a>
         <a href="#" class="navbar__link">Ranking</a>
+
+        @auth
+            @if (auth()->user()->isAdmin() || auth()->user()->isSuperAdmin())
+                <a href="{{ route('admin.dashboard') }}" class="navbar__link">Administración</a>
+            @endif
+        @endauth
     </div>
 
     <!-- Sección Derecha: Perfil y Cerrar Sesión -->
@@ -26,5 +32,4 @@
             <a href="{{ route('auth.login') }}" class="navbar__profile-btn">Iniciar sesión</a>
         @endauth
     </div>
-
 </nav>

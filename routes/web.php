@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\QuestionsController;
+use App\Http\Controllers\TagsController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -85,3 +88,23 @@ Route::get('/password/reset/{token}', [AuthController::class, 'showResetPassword
 Route::post('/password/reset', [AuthController::class, 'resetPassword'])->name('password.update');
 
 Route::get('/perfil', [UsersController::class, 'verPerfil'])->name('users.perfil');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
+});
+
+// Agrupamos las rutas de administración
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+
+    // Solo superadmin puede gestionar usuarios
+    Route::middleware(['superadmin'])->group(function () {
+        Route::get('/users', [UsersController::class, 'index'])->name('admin.users');
+    });
+
+    // Administración de preguntas y tags (accesible para admin y superadmin)
+    Route::get('/questions', [QuestionsController::class, 'index'])->name('admin.questions');
+    Route::get('/tags', [TagsController::class, 'index'])->name('admin.tags');
+});
