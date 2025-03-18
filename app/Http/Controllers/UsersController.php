@@ -16,19 +16,30 @@ class UsersController extends Controller
     /**
      * Obtiene la lista de todos los usuarios.
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = $this->getAuthenticatedUser();
         if (!$user->isAdmin()) {
             return response()->json(['message' => 'Acceso denegado - No eres admin'], 403);
         }
 
-        // Cambié 'User::paginate(10)' por 'User::orderBy('name')->paginate(10)' para tener un orden claro en la lista
-        $users = User::orderBy('name')->paginate(10);
+        // Iniciar la consulta de usuarios
+        $query = User::query();
 
-        // Devolver la vista 'admin.users' con la variable 'users'
+        // Filtrar por nombre o email si se ha introducido un término de búsqueda
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where('name', 'LIKE', "%{$search}%")
+                ->orWhere('email', 'LIKE', "%{$search}%");
+        }
+
+        // Ordenar por ID ascendente y paginar
+        $users = $query->orderBy('id', 'asc')->paginate(10);
+
+        // Devolver la vista con los usuarios filtrados si aplica
         return view('admin.users', compact('users'));
     }
+
 
 
     /**

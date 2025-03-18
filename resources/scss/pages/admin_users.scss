@@ -175,6 +175,7 @@ body {
     font-weight: bold; // Para que se vea más destacado
     border: none; // Quitamos el borde
     border-radius: 5px; // Bordes redondeados
+    margin-bottom: 10px;
     cursor: pointer;
     transition: background-color 0.3s ease; // Mantener una transición suave para el hover
     &:hover {
@@ -182,6 +183,44 @@ body {
     }
     &:focus {
         outline: none; // Eliminamos el contorno al hacer clic
-        box-shadow: 0 0 0 2px $color-secondary; // Sombra sutil al enfocarlo (para accesibilidad)
+    }
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    background: $color-light;
+    border-radius: 8px;
+    input {
+        flex: 1;
+        padding: 0.6rem 1rem;
+        border: 1px solid $color-primary;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        &:focus {
+            outline: none;
+            border-color: darken($color-primary, 10%);
+            box-shadow: 0 0 5px rgba($color-primary, 0.5);
+        }
+    }
+    button {
+        padding: 0.6rem 1rem;
+        background-color: $color-primary;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        &:hover {
+            background-color: darken($color-primary, 10%);
+        }
     }
 }
