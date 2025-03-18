@@ -51,39 +51,34 @@ class UsersController extends Controller
     }
 
     /**
-     * Crea un nuevo usuario.
+     * Crea un nuevo usuario en la base de datos.
      */
     public function store(Request $request)
     {
         $authUser = $this->getAuthenticatedUser();
+
+        // Verificar si el usuario tiene permisos para agregar un nuevo usuario (solo admins)
         if (!$authUser->isAdmin()) {
-            return response()->json(['message' => 'Acceso denegado - No eres admin'], 403);
+            return redirect()->route('admin.users')->with('error', '❌ No tienes permisos para agregar un nuevo usuario.');
         }
 
-        $validator = Validator::make($request->all(), [
+        // Validar los datos del formulario
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
-            'role' => 'sometimes|string|in:user,admin,superadmin',
+            'role' => 'required|string|in:user,admin,superadmin',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $role = 'user';
-        if ($authUser->isSuperAdmin() && $request->has('role')) {
-            $role = $request->role;
-        }
-
+        // Crear el nuevo usuario
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $role,
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['password']),
+            'role' => $validatedData['role'],
         ]);
 
-        return response()->json($user, 201);
+        return redirect()->route('admin.users')->with('message', '✅ Usuario creado con éxito.');
     }
 
     /**
@@ -198,5 +193,13 @@ class UsersController extends Controller
         $user = User::findOrFail($id); // Obtiene el usuario por su ID
 
         return view('admin.edit-user', compact('user')); // Pasa el usuario a la vista
+    }
+
+    /**
+     * Muestra el formulario para crear un nuevo usuario.
+     */
+    public function create()
+    {
+        return view('admin.create-user'); // Vista donde se muestra el formulario
     }
 }

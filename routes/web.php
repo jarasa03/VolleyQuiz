@@ -124,6 +124,12 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     // Usar el controlador para editar un usuario
     Route::get('/users/{id}/edit', [UsersController::class, 'edit'])->name('admin.users.edit'); // Cambié a la función del controlador
 
+    // Ruta para crear un nuevo usuario
+    Route::get('/users/create', [UsersController::class, 'create'])->name('admin.users.create'); // Nueva ruta para mostrar el formulario de creación
+
+    // Ruta para almacenar el nuevo usuario
+    Route::post('/users', [UsersController::class, 'store'])->name('admin.users.store'); // Nueva ruta para crear el usuario
+
     // Ruta para actualizar un usuario
     Route::put('/users/{id}', function ($id) {
         if (!Auth::check()) {

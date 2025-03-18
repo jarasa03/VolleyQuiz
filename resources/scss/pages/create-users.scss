@@ -1,0 +1,134 @@
+@import "../base/variables"; // Importar las variables de color
+// Estilos para la página de crear nuevo usuario
+.create-user-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    background: $color-light;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    width: 100%;
+    h1 {
+        color: $color-dark;
+        font-size: 26px;
+        margin-bottom: 20px;
+        margin-top: 0;
+        font-weight: bold;
+    }
+    // Estilos para los campos de formulario
+    .form-group {
+        margin-bottom: 25px; // Aumentamos el espacio entre campos
+        label {
+            font-size: 16px;
+            color: $color-dark;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+        }
+        input,
+        select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border 0.3s ease;
+            margin-bottom: 15px;
+            &:focus {
+                border-color: $color-primary;
+                outline: none;
+            }
+        }
+    }
+    // Estilos para las contraseñas
+    .password-group {
+        position: relative;
+        display: flex;
+        height: 45px;
+        align-items: center; // Centra el contenido verticalmente
+        input[type="password"] {
+            margin-top: 10px;
+            width: 100%;
+            padding: 12px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border 0.3s ease;
+            margin-bottom: 15px;
+        }
+        .toggle-password {
+            position: absolute;
+            top: 45%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 16px;
+            color: $color-primary;
+            transition: color 0.3s ease;
+            &:hover {
+                color: darken($color-primary, 10%);
+            }
+        }
+    }
+    // Estilos para los botones de acción
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+            &.submit {
+                background: $color-primary;
+                color: white;
+                &:hover {
+                    background: darken($color-primary, 10%);
+                }
+            }
+            &.cancel {
+                background: #ccc;
+                color: #555;
+                &:hover {
+                    background: darken(#ccc, 10%);
+                }
+            }
+        }
+    }
+}
+
+// Responsividad para la creación de usuario
+@media (max-width: 768px) {
+    .create-user-container {
+        max-width: 90%;
+        padding: 20px;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .form-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+
+// Centramos verticalmente el contenedor en la página
+body,
+html {
+    height: 100%;
+    margin: 0;
+}
+
+.admin-users-page {
+    display: flex;
+    justify-content: center; // Centrado horizontal
+    align-items: center; // Centrado vertical
+    min-height: 100vh; // Asegura que el contenedor tenga altura completa de la ventana
+    padding: 0 15px; // Asegura que el contenido no toque los bordes
+    background: $auth-bg-gradient;
+}

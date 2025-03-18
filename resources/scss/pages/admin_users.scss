@@ -3,6 +3,8 @@
     max-width: 1200px;
     margin: 50px auto;
     padding: 30px;
+    padding-bottom: 0;
+    padding-top: 20px;
     background: $color-light;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -12,6 +14,7 @@
         color: $color-dark;
         font-size: 26px;
         margin-bottom: 20px;
+        margin-top: 0;
     }
     .user-table {
         width: 100%;
@@ -90,7 +93,7 @@
 }
 
 body {
-    overflow: auto !important;
+    overflow: hidden;
 }
 
 /* Asegúrate de que la paginación esté centrada */
@@ -102,7 +105,6 @@ body {
     align-items: center;
     /* Centrado vertical */
     list-style: none;
-    margin: 20px auto;
     /* Espaciado y centrado */
     padding: 0;
 }
@@ -162,4 +164,24 @@ body {
 .pagination .disabled .page-link {
     color: #ccc;
     pointer-events: none;
+}
+
+// Estilos para el botón "Crear Nuevo Usuario"
+.btn.add-user {
+    background-color: $color-primary; // Usamos el color primario de tu marca
+    color: white;
+    padding: 10px 15px; // Ajustamos el padding para un tamaño más acorde
+    font-size: 14px; // Mantenemos el tamaño de fuente coherente con los otros botones
+    font-weight: bold; // Para que se vea más destacado
+    border: none; // Quitamos el borde
+    border-radius: 5px; // Bordes redondeados
+    cursor: pointer;
+    transition: background-color 0.3s ease; // Mantener una transición suave para el hover
+    &:hover {
+        background-color: darken($color-primary, 5%); // Efecto hover más sutil
+    }
+    &:focus {
+        outline: none; // Eliminamos el contorno al hacer clic
+        box-shadow: 0 0 0 2px $color-secondary; // Sombra sutil al enfocarlo (para accesibilidad)
+    }
 }

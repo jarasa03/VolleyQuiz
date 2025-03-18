@@ -27,6 +27,11 @@
             </div>
         @endif
 
+        <!-- Botón para crear un nuevo usuario -->
+        <form action="{{ route('admin.users.create') }}" method="GET">
+            <button type="submit" class="btn add-user">+ Crear Nuevo Usuario</button>
+        </form>
+
         <table class="user-table">
             <thead>
                 <tr>
