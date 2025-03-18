@@ -134,9 +134,6 @@ class UsersController extends Controller
     }
 
 
-    /**
-     * Elimina un usuario de la base de datos.
-     */
     public function destroy($id)
     {
         $authUser = $this->getAuthenticatedUser();
@@ -146,21 +143,28 @@ class UsersController extends Controller
             return redirect()->route('admin.users')->with('error', '❌ Usuario no encontrado');
         }
 
+        // No permitir que se elimine a sí mismo
         if ($authUser->id === $user->id) {
             return redirect()->route('admin.users')->with('error', '❌ No puedes eliminar tu propia cuenta');
         }
 
-        if ($user->isSuperAdmin()) {
-            return redirect()->route('admin.users')->with('error', '❌ No puedes eliminar a un superadmin');
+        // Permitir que un superadmin elimine a otro superadmin
+        // Si no es un superadmin, se evitará eliminar a otro superadmin
+        if ($authUser->isSuperAdmin() && !$user->isSuperAdmin()) {
+            $user->delete();
+            return redirect()->route('admin.users')->with('message', '✅ Usuario eliminado');
         }
 
+        // Restringir eliminación si el usuario autenticado no es superadmin
         if (!$authUser->isSuperAdmin() && $user->isAdmin()) {
             return redirect()->route('admin.users')->with('error', '❌ No puedes eliminar un administrador');
         }
 
+        // Si todo está bien, eliminar al usuario
         $user->delete();
         return redirect()->route('admin.users')->with('message', '✅ Usuario eliminado');
     }
+
 
 
     /**
