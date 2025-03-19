@@ -7,22 +7,28 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Routing\Controller;
+use App\Traits\AuthHelpers;
+use App\Traits\AdminMiddleware;
 
 /**
  * Controlador para la gestión de usuarios.
  */
 class UsersController extends Controller
 {
+    use AuthHelpers, AdminMiddleware;
+
+    public function __construct()
+    {
+        $this->applyAdminMiddleware(); // 🔹 Llamamos al método del Trait en lugar de definir el constructor manualmente
+    }
+
+
     /**
      * Obtiene la lista de todos los usuarios.
      */
     public function index(Request $request)
     {
-        $user = $this->getAuthenticatedUser();
-        if (!$user->isAdmin()) {
-            return response()->json(['message' => 'Acceso denegado - No eres admin'], 403);
-        }
-
         // Iniciar la consulta de usuarios
         $query = User::query();
 
@@ -41,22 +47,12 @@ class UsersController extends Controller
     }
 
 
-
     /**
      * Obtiene la información de un usuario por su ID.
      */
     public function show($id)
     {
-        $authUser = $this->getAuthenticatedUser();
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json(['message' => 'Usuario no encontrado'], 404);
-        }
-
-        if ($authUser->id !== $user->id && !$authUser->isAdmin()) {
-            return response()->json(['message' => 'Acceso denegado'], 403);
-        }
+        $user = User::findOrFail($id);
 
         return response()->json($user, 200);
     }
@@ -66,13 +62,6 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        $authUser = $this->getAuthenticatedUser();
-
-        // Verificar si el usuario tiene permisos para agregar un nuevo usuario (solo admins)
-        if (!$authUser->isAdmin()) {
-            return redirect()->route('admin.users.index')->with('error', '❌ No tienes permisos para agregar un nuevo usuario.');
-        }
-
         // Validar los datos del formulario
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -82,7 +71,7 @@ class UsersController extends Controller
         ]);
 
         // Crear el nuevo usuario
-        $user = User::create([
+        User::create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
@@ -97,20 +86,9 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Obtener el usuario autenticado
-        $authUser = $this->getAuthenticatedUser();
 
         // Buscar el usuario a actualizar
-        $user = User::find($id);
-
-        if (!$user) {
-            return redirect()->route('admin.users.index')->with('error', '❌ Usuario no encontrado');
-        }
-
-        // Verificar si el usuario autenticado puede editar este usuario
-        if ($authUser->id !== $user->id && !$authUser->isAdmin()) {
-            return redirect()->route('admin.users.index')->with('error', '❌ Acceso denegado');
-        }
+        $user = User::findOrFail($id);
 
         // Validación de los datos del formulario
         $validator = Validator::make($request->all(), [
@@ -124,11 +102,6 @@ class UsersController extends Controller
             return redirect()->route('admin.users.edit', $id)
                 ->withErrors($validator)
                 ->withInput();
-        }
-
-        // Actualizar el rol si el usuario es Superadmin y si se pasó un rol en la solicitud
-        if ($authUser->isSuperAdmin() && $request->has('role')) {
-            $user->role = $request->role;
         }
 
         // Actualizar los campos del usuario
@@ -148,11 +121,7 @@ class UsersController extends Controller
     public function destroy($id)
     {
         $authUser = $this->getAuthenticatedUser();
-        $user = User::find($id);
-
-        if (!$user) {
-            return redirect()->route('admin.users.index')->with('error', '❌ Usuario no encontrado');
-        }
+        $user = User::findOrFail($id);
 
         // No permitir que se elimine a sí mismo
         if ($authUser->id === $user->id) {
@@ -176,39 +145,14 @@ class UsersController extends Controller
         return redirect()->route('admin.users.index')->with('message', '✅ Usuario eliminado');
     }
 
-
-
-    /**
-     * Obtiene el usuario autenticado de la solicitud.
-     */
-    private function getAuthenticatedUser()
-    {
-        $authUser = Auth::user();
-
-        if (!$authUser) {
-            $token = request()->bearerToken();
-            if ($token) {
-                $personalAccessToken = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
-                if ($personalAccessToken) {
-                    $authUser = $personalAccessToken->tokenable;
-                    Auth::setUser($authUser);
-                }
-            }
-        }
-
-        if (!$authUser) {
-            abort(response()->json(['message' => 'No autenticado'], 401));
-        }
-
-        return $authUser;
-    }
-
     public function edit($id)
     {
-        $user = User::findOrFail($id); // Obtiene el usuario por su ID
+        $user = User::findOrFail($id);
+        $authUser = $this->getAuthenticatedUser(); // 🔹 Solo si necesitas datos del usuario autenticado
 
-        return view('admin.users.edit', compact('user')); // Pasa el usuario a la vista
+        return view('admin.users.edit', compact('user', 'authUser'));
     }
+
 
     /**
      * Muestra el formulario para crear un nuevo usuario.
