@@ -19,12 +19,16 @@
     .user-table {
         width: 100%;
         border-collapse: collapse;
+        table-layout: fixed;
         margin-top: 20px;
         th,
         td {
             padding: 12px;
+            white-space: nowrap;
+            overflow: hidden;
             text-align: left;
             border-bottom: 1px solid #ddd;
+            text-overflow: ellipsis;
         }
         th {
             background: $color-primary;
@@ -90,10 +94,6 @@
         padding: 8px;
         font-size: 14px;
     }
-}
-
-body {
-    overflow: hidden;
 }
 
 /* Asegúrate de que la paginación esté centrada */
