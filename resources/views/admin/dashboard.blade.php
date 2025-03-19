@@ -12,7 +12,7 @@
 
             <div class="admin-menu">
                 @if (auth()->user()->isSuperAdmin())
-                    <form action="{{ route('admin.users') }}" method="GET">
+                    <form action="{{ route('admin.users.index') }}" method="GET">
                         <button type="submit" class="admin-button no-select">Administración de Usuarios</button>
                     </form>
                 @endif

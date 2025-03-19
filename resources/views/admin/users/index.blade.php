@@ -33,7 +33,7 @@
         </form>
 
         <!-- 🔍 Formulario de Búsqueda -->
-        <form method="GET" action="{{ route('admin.users') }}" class="search-form">
+        <form method="GET" action="{{ route('admin.users.index') }}" class="search-form">
             <input type="text" name="search" placeholder="Buscar por nombre o email" value="{{ request('search') }}">
             <button type="submit">🔍 Buscar</button>
         </form>

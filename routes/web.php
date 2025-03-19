@@ -119,7 +119,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     })->name('admin.dashboard');
 
     // Ruta para obtener los usuarios
-    Route::get('/users', [UsersController::class, 'index'])->name('admin.users'); // Cambié la función a la del controlador
+    Route::get('/users', [UsersController::class, 'index'])->name('admin.users.index'); // Cambié la función a la del controlador
 
     // Usar el controlador para editar un usuario
     Route::get('/users/{id}/edit', [UsersController::class, 'edit'])->name('admin.users.edit'); // Cambié a la función del controlador

@@ -33,7 +33,7 @@
 
             <div class="form-actions">
                 <button type="submit" class="btn submit">Actualizar Usuario</button>
-                <a href="{{ route('admin.users') }}" class="btn cancel">Cancelar</a>
+                <a href="{{ route('admin.users.index') }}" class="btn cancel">Cancelar</a>
             </div>
         </form>
     </div>

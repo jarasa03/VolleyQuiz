@@ -11,8 +11,11 @@ class QuestionsController extends Controller
     // 🔹 Obtener todas las preguntas
     public function index()
     {
-        return response()->json(Question::with(['category', 'answers', 'tags'])->get(), 200);
+        $questions = Question::with(['category', 'answers', 'tags'])->paginate(10); // Agregamos paginación
+
+        return view('admin.questions.index', compact('questions'));
     }
+
 
     // 🔹 Crear una nueva pregunta
     public function store(Request $request)

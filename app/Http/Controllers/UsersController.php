@@ -37,7 +37,7 @@ class UsersController extends Controller
         $users = $query->orderBy('id', 'asc')->paginate(10);
 
         // Devolver la vista con los usuarios filtrados si aplica
-        return view('admin.users', compact('users'));
+        return view('admin.users.index', compact('users'));
     }
 
 
@@ -70,7 +70,7 @@ class UsersController extends Controller
 
         // Verificar si el usuario tiene permisos para agregar un nuevo usuario (solo admins)
         if (!$authUser->isAdmin()) {
-            return redirect()->route('admin.users')->with('error', '❌ No tienes permisos para agregar un nuevo usuario.');
+            return redirect()->route('admin.users.index')->with('error', '❌ No tienes permisos para agregar un nuevo usuario.');
         }
 
         // Validar los datos del formulario
@@ -89,7 +89,7 @@ class UsersController extends Controller
             'role' => $validatedData['role'],
         ]);
 
-        return redirect()->route('admin.users')->with('message', '✅ Usuario creado con éxito.');
+        return redirect()->route('admin.users.index')->with('message', '✅ Usuario creado con éxito.');
     }
 
     /**
@@ -104,12 +104,12 @@ class UsersController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return redirect()->route('admin.users')->with('error', '❌ Usuario no encontrado');
+            return redirect()->route('admin.users.index')->with('error', '❌ Usuario no encontrado');
         }
 
         // Verificar si el usuario autenticado puede editar este usuario
         if ($authUser->id !== $user->id && !$authUser->isAdmin()) {
-            return redirect()->route('admin.users')->with('error', '❌ Acceso denegado');
+            return redirect()->route('admin.users.index')->with('error', '❌ Acceso denegado');
         }
 
         // Validación de los datos del formulario
@@ -141,7 +141,7 @@ class UsersController extends Controller
         }
 
         // Redirigir al listado de usuarios con un mensaje de éxito
-        return redirect()->route('admin.users')->with('message', '✅ Usuario actualizado correctamente');
+        return redirect()->route('admin.users.index')->with('message', '✅ Usuario actualizado correctamente');
     }
 
 
@@ -151,29 +151,29 @@ class UsersController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return redirect()->route('admin.users')->with('error', '❌ Usuario no encontrado');
+            return redirect()->route('admin.users.index')->with('error', '❌ Usuario no encontrado');
         }
 
         // No permitir que se elimine a sí mismo
         if ($authUser->id === $user->id) {
-            return redirect()->route('admin.users')->with('error', '❌ No puedes eliminar tu propia cuenta');
+            return redirect()->route('admin.users.index')->with('error', '❌ No puedes eliminar tu propia cuenta');
         }
 
         // Permitir que un superadmin elimine a otro superadmin
         // Si no es un superadmin, se evitará eliminar a otro superadmin
         if ($authUser->isSuperAdmin() && !$user->isSuperAdmin()) {
             $user->delete();
-            return redirect()->route('admin.users')->with('message', '✅ Usuario eliminado');
+            return redirect()->route('admin.users.index')->with('message', '✅ Usuario eliminado');
         }
 
         // Restringir eliminación si el usuario autenticado no es superadmin
         if (!$authUser->isSuperAdmin() && $user->isAdmin()) {
-            return redirect()->route('admin.users')->with('error', '❌ No puedes eliminar un administrador');
+            return redirect()->route('admin.users.index')->with('error', '❌ No puedes eliminar un administrador');
         }
 
         // Si todo está bien, eliminar al usuario
         $user->delete();
-        return redirect()->route('admin.users')->with('message', '✅ Usuario eliminado');
+        return redirect()->route('admin.users.index')->with('message', '✅ Usuario eliminado');
     }
 
 
@@ -207,7 +207,7 @@ class UsersController extends Controller
     {
         $user = User::findOrFail($id); // Obtiene el usuario por su ID
 
-        return view('admin.edit-user', compact('user')); // Pasa el usuario a la vista
+        return view('admin.users.edit', compact('user')); // Pasa el usuario a la vista
     }
 
     /**
@@ -215,6 +215,6 @@ class UsersController extends Controller
      */
     public function create()
     {
-        return view('admin.create-user'); // Vista donde se muestra el formulario
+        return view('admin.users.create'); // Vista donde se muestra el formulario
     }
 }
