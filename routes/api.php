@@ -72,13 +72,17 @@ Route::apiResource('questions', QuestionsController::class)->names([
 Route::post('questions/{id}/tags', [QuestionsController::class, 'attachTags'])->name('questions.attachTags');
 Route::delete('questions/{question_id}/tags/{tag_id}', [QuestionsController::class, 'detachTag'])->name('questions.detachTag');
 
-Route::apiResource('tags', TagsController::class)->names([
-    'index'   => 'tags.index',   // Obtener todas las etiquetas
-    'store'   => 'tags.store',   // Crear una nueva etiqueta
-    'show'    => 'tags.show',    // Obtener una etiqueta específica
-    'update'  => 'tags.update',  // Actualizar una etiqueta
-    'destroy' => 'tags.destroy', // Eliminar una etiqueta
-]);
+// api.php
+Route::prefix('api')->group(function () {
+    Route::apiResource('tags', TagsController::class)->names([
+        'index'   => 'tags.index',   // Obtener todas las etiquetas
+        'store'   => 'tags.store',   // Crear una nueva etiqueta
+        'show'    => 'tags.show',    // Obtener una etiqueta específica
+        'update'  => 'tags.update',  // Actualizar una etiqueta
+        'destroy' => 'tags.destroy', // Eliminar una etiqueta
+    ]);
+});
+
 
 Route::apiResource('tests', TestController::class)->names([
     'index'   => 'tests.index',   // Obtener todos los tests

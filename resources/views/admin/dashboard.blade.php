@@ -21,7 +21,7 @@
                     <button type="submit" class="admin-button no-select">Gestión de Preguntas</button>
                 </form>
 
-                <form action="{{ route('admin.tags') }}" method="GET">
+                <form action="{{ route('admin.tags.index') }}" method="GET">
                     <button type="submit" class="admin-button no-select">Gestión de Tags</button>
                 </form>
             </div>

@@ -167,7 +167,8 @@
 }
 
 // Estilos para el botón "Crear Nuevo Usuario"
-.btn.add-user {
+.btn.add-user,
+.btn.clear-search {
     background-color: $color-primary; // Usamos el color primario de tu marca
     color: white;
     padding: 10px 15px; // Ajustamos el padding para un tamaño más acorde

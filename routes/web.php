@@ -147,4 +147,15 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         // Aquí llamarías al controlador para eliminar el usuario
         return app(UsersController::class)->destroy($id);
     })->name('admin.users.delete');
+
+    // 📌 Gestión de Tags (solo administradores)
+    Route::prefix('tags')->middleware('auth')->group(function () {
+        Route::get('/', [TagsController::class, 'index'])->name('admin.tags.index');
+        Route::get('/create', [TagsController::class, 'create'])->name('admin.tags.create');
+        Route::post('/', [TagsController::class, 'store'])->name('admin.tags.store');
+        Route::get('/{id}/edit', [TagsController::class, 'edit'])->name('admin.tags.edit');
+        Route::put('/{id}', [TagsController::class, 'update'])->name('admin.tags.update');
+        Route::delete('/{id}', [TagsController::class, 'destroy'])->name('admin.tags.delete');
+    });
+    Route::post('/admin/tags', [TagsController::class, 'store'])->name('admin.tags.store');
 });

@@ -73,6 +73,47 @@ body.admin-page {
     }
 }
 
+#color-picker {
+    height: 45px;
+}
+
+#randomColorBtn {
+    position: relative;
+    margin-left: 50%;
+    transform: translate(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    height: 35px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-size: 14px;
+    background-color: $color-secondary;
+    &.edit {
+        background: $color-secondary;
+        color: $color-dark;
+        &:hover {
+            background: darken($color-secondary, 10%);
+        }
+    }
+    &.delete {
+        background: $color-accent;
+        color: white;
+        &:hover {
+            background: darken($color-accent, 10%);
+        }
+    }
+    &:hover {
+        background-color: darken(
+            $color-secondary,
+            5%
+        ); // Efecto hover más sutil
+    }
+}
+
 // Responsividad
 @media (max-width: 500px) {
     .admin-container {
