@@ -38,6 +38,16 @@
             <button type="submit">🔍 Buscar</button>
         </form>
 
+        @if (request('search'))
+            <p>Resultados para "<strong>{{ request('search') }}</strong>": {{ $users->total() }} encontrados</p>
+        @endif
+
+        @if (request('search'))
+            <form action="{{ route('admin.users.index') }}" method="GET">
+                <button type="submit" class="btn clear-search">❌ Limpiar Búsqueda</button>
+            </form>
+        @endif
+
         <table class="user-table">
             <thead>
                 <tr>
