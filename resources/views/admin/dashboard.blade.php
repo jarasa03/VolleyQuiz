@@ -17,7 +17,7 @@
                     </form>
                 @endif
 
-                <form action="{{ route('admin.questions') }}" method="GET">
+                <form action="{{ route('admin.questions.index') }}" method="GET">
                     <button type="submit" class="admin-button no-select">Gestión de Preguntas</button>
                 </form>
 

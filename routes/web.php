@@ -157,5 +157,15 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::put('/{id}', [TagsController::class, 'update'])->name('admin.tags.update');
         Route::delete('/{id}', [TagsController::class, 'destroy'])->name('admin.tags.delete');
     });
-    Route::post('/admin/tags', [TagsController::class, 'store'])->name('admin.tags.store');
+    // Route::post('/admin/tags', [TagsController::class, 'store'])->name('admin.tags.store');
+
+    // 📌 Gestión de Preguntas
+    Route::prefix('questions')->middleware('auth')->group(function () {
+        Route::get('/', [QuestionsController::class, 'index'])->name('admin.questions.index');
+        Route::get('/create', [QuestionsController::class, 'create'])->name('admin.questions.create');
+        Route::post('/', [QuestionsController::class, 'store'])->name('admin.questions.store');
+        Route::get('/{id}/edit', [QuestionsController::class, 'edit'])->name('admin.questions.edit');
+        Route::put('/{id}', [QuestionsController::class, 'update'])->name('admin.questions.update');
+        Route::delete('/{id}', [QuestionsController::class, 'destroy'])->name('admin.questions.delete');
+    });
 });

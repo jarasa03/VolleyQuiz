@@ -118,6 +118,262 @@ body.admin-page {
     }
 }
 
+.true-false-options {
+    display: grid;
+    text-align: center;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background: $color-light;
+    /* Fondo claro */
+    border-radius: 8px;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+.true-false-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 130px;
+    /* Tamaño uniforme */
+    height: 60px;
+    font-size: 18px;
+    font-weight: bold;
+    color: $color-dark;
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    border: 2px solid $color-primary;
+    /* Azul principal */
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+}
+
+/* Ocultar la bolita del radio button */
+
+.true-false-label input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* 🎯 Cambia el color según la opción seleccionada */
+
+.true-false-label:has(input:checked) {
+    color: white;
+    border-color: $color-dark;
+}
+
+/* ✅ Si es "Verdadero", verde */
+
+.true-false-label:has(input[value="true"]:checked) {
+    background: $color-success-bg;
+    border-color: $color-success;
+    color: $color-success;
+}
+
+/* ❌ Si es "Falso", rojo */
+
+.true-false-label:has(input[value="false"]:checked) {
+    background: $color-danger-bg;
+    border-color: $color-danger;
+    color: $color-danger;
+}
+
+/* Efecto hover */
+
+.true-false-label:hover {
+    background: lighten($color-primary, 20%);
+    border-color: darken($color-primary, 10%);
+}
+
+// ******************************************
+.answers-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background: $color-light;
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid $color-secondary;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.answer-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid $color-primary;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    gap: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+}
+
+/* Estilo para el input de respuesta */
+
+.answer-item input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid lighten($color-dark, 30%);
+    background: lighten($color-light, 5%);
+    margin: 0 !important;
+}
+
+/* Checkbox de correcta */
+
+.answer-item label {
+    font-size: 14px;
+    font-weight: bold;
+    color: $color-dark;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.answer-item input[type="checkbox"] {
+    accent-color: $color-success;
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+/* Botón de eliminar respuesta */
+
+.answer-item .remove-answer {
+    background: $color-danger;
+    color: white;
+    border: none;
+    font-size: 16px;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.answer-item .remove-answer:hover {
+    background: darken($color-danger, 10%);
+}
+
+/* Botón de agregar respuesta */
+
+#add-answer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    /* Espacio entre el icono y el texto */
+    background: $color-primary;
+    color: white;
+    border: none;
+    font-size: 16px;
+    padding: 10px 15px;
+    /* Ajusta el padding para mejor tamaño */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+    width: fit-content;
+    /* Que el botón se adapte al contenido */
+    min-width: 180px;
+    /* Tamaño mínimo para que no sea demasiado pequeño */
+    margin: 15px auto;
+    /* Centrar el botón */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+#add-answer:hover {
+    background: darken($color-primary, 10%);
+}
+
+#add-answer::before {
+    content: "➕";
+    font-size: 18px;
+}
+
+.correct-answer-btn,
+.remove-answer {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    border: none;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* ✅ Botón de correcta (apagado por defecto) */
+
+.correct-answer-btn {
+    background: $color-light;
+    border: 2px solid $color-primary;
+    color: $color-primary;
+}
+
+/* 🔥 Efecto cuando se marca como correcta */
+
+.correct-answer-btn.correct {
+    background: $color-primary;
+    color: white;
+    border-color: darken($color-primary, 10%);
+}
+
+/* ❌ Botón de eliminar */
+
+.remove-answer {
+    background: $color-accent;
+    color: white;
+}
+
+.remove-answer:hover {
+    background: darken($color-accent, 10%);
+}
+
+/* 🔄 Hover del botón de correcta */
+
+.correct-answer-btn:hover {
+    background: lighten($color-primary, 10%);
+}
+
+#create-question-container {
+    margin-top: 110px;
+}
+
+/* ✅ Estilo cuando una opción está seleccionada */
+
+.true-false-label.selected {
+    background: $color-success-bg;
+    border-color: $color-success;
+    color: $color-success;
+}
+
+/* ❌ Si es "Falso", rojo */
+
+.true-false-label.selected:has(input[value="false"]) {
+    background: $color-danger-bg;
+    border-color: $color-danger;
+    color: $color-danger;
+}
+
 // Responsividad
 @media (max-width: 500px) {
     .admin-container {

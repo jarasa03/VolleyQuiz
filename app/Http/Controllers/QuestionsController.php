@@ -3,120 +3,180 @@
 namespace App\Http\Controllers;
 
 use App\Models\Question;
+use App\Models\Category;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Routing\Controller;
+use App\Traits\AuthHelpers;
+use App\Traits\AdminMiddleware;
 
+/**
+ * Controlador para la gestión de preguntas.
+ */
 class QuestionsController extends Controller
 {
-    // 🔹 Obtener todas las preguntas
-    public function index()
-    {
-        $questions = Question::with(['category', 'answers', 'tags'])->paginate(10); // Agregamos paginación
+    use AuthHelpers, AdminMiddleware;
 
-        return view('admin.questions.index', compact('questions'));
+    public function __construct()
+    {
+        $this->applyAdminMiddleware(); // Llamamos al método del Trait en lugar de definir el constructor manualmente
     }
 
+    // Mostrar la lista de preguntas con búsqueda
+    public function index(Request $request)
+    {
+        $search = $request->input('search');
+        $query = Question::with(['category', 'answers', 'tags']);
 
-    // 🔹 Crear una nueva pregunta
+        if ($search) {
+            $query->where('question_text', 'LIKE', "%{$search}%");
+        }
+
+        $questions = $query->orderBy('id', 'asc')->paginate(10);
+        return view('admin.questions.index', compact('questions', 'search'));
+    }
+
+    // Mostrar formulario de creación
+    public function create()
+    {
+        $categories = Category::all();
+        $tags = Tag::all();
+        return view('admin.questions.create', compact('categories', 'tags'));
+    }
+
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validatedData = $request->validate([
             'question_text' => 'required|string',
             'question_type' => 'required|string|in:multiple_choice,true_false',
             'category_id'   => 'required|exists:categories,id',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+        $question = Question::create($validatedData);
+
+        // ✅ Guardar respuestas según el tipo de pregunta
+        if ($validatedData['question_type'] === 'multiple_choice') {
+            $answers = $request->input('answers', []);
+
+            foreach ($answers as $answerData) {
+                if (!empty($answerData['text'])) {
+                    $question->answers()->create([
+                        'answer_text' => $answerData['text'],
+                        'is_correct' => isset($answerData['correct']) && $answerData['correct'] == '1'
+                    ]);
+                }
+            }
+        } elseif ($validatedData['question_type'] === 'true_false') {
+            $correctAnswer = $request->input('correct_answer'); // 'true' o 'false'
+
+            $question->answers()->create([
+                'answer_text' => 'true',
+                'is_correct' => $correctAnswer === 'true'
+            ]);
+
+            $question->answers()->create([
+                'answer_text' => 'false',
+                'is_correct' => $correctAnswer === 'false'
+            ]);
         }
 
-        $question = Question::create([
-            'question_text' => $request->question_text,
-            'question_type' => $request->question_type,
-            'category_id'   => $request->category_id,
-        ]);
+        // ✅ Asignar tags (deserializando el string JSON del input oculto)
+        $tagIds = json_decode($request->input('tags', '[]'), true);
 
-        return response()->json($question, 201);
+        if (is_array($tagIds) && !empty($tagIds)) {
+            $validTags = Tag::whereIn('id', $tagIds)->pluck('id')->toArray();
+            $question->tags()->sync($validTags);
+        }
+
+        return redirect()->route('admin.questions.index')->with('success', '✅ Pregunta creada con éxito.');
     }
 
-    // 🔹 Obtener una pregunta por ID
-    public function show($id)
+
+
+
+
+
+    // Mostrar formulario de edición
+    public function edit($id)
     {
-        $question = Question::with(['category', 'answers', 'tags'])->find($id);
-
-        if (!$question) {
-            return response()->json(['message' => 'Pregunta no encontrada'], 404);
-        }
-
-        return response()->json($question, 200);
+        $question = Question::findOrFail($id);
+        $categories = Category::all();
+        $tags = Tag::all();
+        return view('admin.questions.edit', compact('question', 'categories', 'tags'));
     }
 
-    // 🔹 Actualizar una pregunta
+    // Actualizar una pregunta
     public function update(Request $request, $id)
     {
-        $question = Question::find($id);
+        $question = Question::findOrFail($id);
 
-        if (!$question) {
-            return response()->json(['message' => 'Pregunta no encontrada'], 404);
-        }
+        // Asegurar que los tags llegan como array de enteros
+        $tagsArray = array_map('intval', explode(',', $request->input('tags', '')));
+        $request->merge(['tags' => $tagsArray]);
 
-        $validator = Validator::make($request->all(), [
-            'question_text' => 'sometimes|string',
-            'question_type' => 'sometimes|string|in:multiple_choice,true_false',
-            'category_id'   => 'sometimes|exists:categories,id',
+        $validatedData = $request->validate([
+            'question_text' => 'required|string',
+            'question_type' => 'required|string|in:multiple_choice,true_false',
+            'category_id'   => 'required|exists:categories,id',
+            'tags'          => 'nullable|array',
+            'tags.*'        => 'exists:tags,id',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+        $question->update($validatedData);
+
+        $tagIds = $request->input('tags', []);
+        $validTags = Tag::whereIn('id', $tagIds)->pluck('id')->toArray();
+        $question->tags()->sync($validTags);
+
+
+        // 🧹 Limpiar respuestas anteriores
+        $question->answers()->delete();
+
+        // 🔄 Reinsertar según tipo de pregunta
+        if ($validatedData['question_type'] === 'multiple_choice') {
+            $answers = $request->input('answers', []);
+            $correctFlags = $request->input('correct_answers', []);
+
+            foreach ($answers as $index => $text) {
+                if (!empty($text)) {
+                    $question->answers()->create([
+                        'answer_text' => $text,
+                        'is_correct' => isset($correctFlags[$index]) && $correctFlags[$index] == '1'
+                    ]);
+                }
+            }
+        } elseif ($validatedData['question_type'] === 'true_false') {
+            $correctAnswer = $request->input('correct_answer');
+
+            $question->answers()->create([
+                'answer_text' => 'true',
+                'is_correct' => $correctAnswer === 'true'
+            ]);
+
+            $question->answers()->create([
+                'answer_text' => 'false',
+                'is_correct' => $correctAnswer === 'false'
+            ]);
         }
 
-        $question->update($request->only(['question_text', 'question_type', 'category_id']));
-
-        return response()->json($question, 200);
+        return redirect()->route('admin.questions.index')->with('success', '✅ Pregunta actualizada correctamente.');
     }
 
-    // 🔹 Eliminar una pregunta
+
+    // Eliminar una pregunta
     public function destroy($id)
     {
-        $question = Question::find($id);
+        $question = Question::findOrFail($id);
 
-        if (!$question) {
-            return response()->json(['message' => 'Pregunta no encontrada'], 404);
-        }
+        // Eliminar respuestas asociadas antes de eliminar la pregunta
+        $question->answers()->delete();
+
+        // También eliminamos los tags relacionados (opcional, Laravel lo hace solo con sync)
+        $question->tags()->detach();
 
         $question->delete();
 
-        return response()->json(['message' => 'Pregunta eliminada'], 200);
-    }
-
-    // Asignar etiquetas a una pregunta
-    public function attachTags(Request $request, $id)
-    {
-        $question = Question::find($id);
-        if (!$question) {
-            return response()->json(['message' => 'Pregunta no encontrada'], 404);
-        }
-
-        $request->validate([
-            'tags' => 'required|array',
-            'tags.*' => 'exists:tags,id', // Cada ID de tag debe existir en la tabla tags
-        ]);
-
-        $question->tags()->syncWithoutDetaching($request->tags); // Evita duplicados
-
-        return response()->json(['message' => 'Etiquetas asignadas con éxito'], 200);
-    }
-
-    // Eliminar una etiqueta de una pregunta
-    public function detachTag($question_id, $tag_id)
-    {
-        $question = Question::find($question_id);
-        if (!$question) {
-            return response()->json(['message' => 'Pregunta no encontrada'], 404);
-        }
-
-        $question->tags()->detach($tag_id);
-
-        return response()->json(['message' => 'Etiqueta eliminada con éxito'], 200);
+        return redirect()->route('admin.questions.index')->with('success', '✅ Pregunta eliminada correctamente.');
     }
 }
