@@ -1,0 +1,8 @@
+@import "./variables";
+body {
+    background: linear-gradient(
+        135deg,
+        $color-primary,
+        darken($color-primary, 20%)
+    );
+}

@@ -15,6 +15,29 @@ class DocumentsController extends Controller
         return response()->json(Document::all(), 200);
     }
 
+    // Mostrar la vista del dashboard de documentación
+    public function dashboard()
+    {
+        return view('documentation.dashboard');
+    }
+
+    public function verSeccion($seccion)
+    {
+        $vista = match ($seccion) {
+            'general' => 'documentation.general',
+            'fivb' => 'documentation.fivb',
+            'rfevb' => 'documentation.rfevb',
+            'fmvb' => 'documentation.territoriales.fmvb',
+            default => null,
+        };
+
+        if (!$vista || !view()->exists($vista)) {
+            abort(404);
+        }
+
+        return view($vista, ['seccion' => strtoupper($seccion)]);
+    }
+
     // Subir un nuevo documento
     public function store(Request $request)
     {

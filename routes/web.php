@@ -10,6 +10,7 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\QuestionsController;
 use App\Http\Controllers\TagsController;
+use App\Http\Controllers\DocumentsController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -169,3 +170,6 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::delete('/{id}', [QuestionsController::class, 'destroy'])->name('admin.questions.delete');
     });
 });
+
+Route::get('/documentacion', [DocumentsController::class, 'dashboard'])->name('documentacion.index');
+Route::get('/documentacion/{seccion}', [DocumentsController::class, 'verSeccion'])->name('documentacion.seccion');
