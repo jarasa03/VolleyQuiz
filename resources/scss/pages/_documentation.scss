@@ -44,3 +44,45 @@
         }
     }
 }
+
+// Lista de documentos en secciones como 'general', 'fivb', etc.
+.document-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+    .document-card {
+        background-color: lighten($color-light, 3%);
+        border-left: 6px solid $color-secondary;
+        padding: 1rem 1.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: transform 0.2s ease;
+        &:hover {
+            transform: translateY(-3px);
+        }
+        .document-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: $color-dark;
+        }
+        .document-actions {
+            .doc-button {
+                background-color: $color-accent;
+                color: $color-light;
+                padding: 0.5rem 1.2rem;
+                border-radius: 0.75rem;
+                font-weight: 500;
+                font-size: 0.95rem;
+                border: none;
+                transition: background-color 0.3s ease;
+                &:hover {
+                    background-color: darken($color-accent, 10%);
+                }
+            }
+        }
+    }
+}

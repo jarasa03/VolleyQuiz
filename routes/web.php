@@ -150,7 +150,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     })->name('admin.users.delete');
 
     // 📌 Gestión de Tags (solo administradores)
-    Route::prefix('tags')->middleware('auth')->group(function () {
+    Route::prefix('tags')->group(function () {
         Route::get('/', [TagsController::class, 'index'])->name('admin.tags.index');
         Route::get('/create', [TagsController::class, 'create'])->name('admin.tags.create');
         Route::post('/', [TagsController::class, 'store'])->name('admin.tags.store');
@@ -161,13 +161,23 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     // Route::post('/admin/tags', [TagsController::class, 'store'])->name('admin.tags.store');
 
     // 📌 Gestión de Preguntas
-    Route::prefix('questions')->middleware('auth')->group(function () {
+    Route::prefix('questions')->group(function () {
         Route::get('/', [QuestionsController::class, 'index'])->name('admin.questions.index');
         Route::get('/create', [QuestionsController::class, 'create'])->name('admin.questions.create');
         Route::post('/', [QuestionsController::class, 'store'])->name('admin.questions.store');
         Route::get('/{id}/edit', [QuestionsController::class, 'edit'])->name('admin.questions.edit');
         Route::put('/{id}', [QuestionsController::class, 'update'])->name('admin.questions.update');
         Route::delete('/{id}', [QuestionsController::class, 'destroy'])->name('admin.questions.delete');
+    });
+
+    // 📄 Gestión de Documentación
+    Route::prefix('documents')->group(function () {
+        Route::get('/', [DocumentsController::class, 'adminIndex'])->name('admin.documents.index');
+        Route::get('/crear', [DocumentsController::class, 'create'])->name('admin.documents.create');
+        Route::post('/', [DocumentsController::class, 'store'])->name('admin.documents.store');
+        Route::get('/{id}/editar', [DocumentsController::class, 'edit'])->name('admin.documents.edit');
+        Route::put('/{id}', [DocumentsController::class, 'update'])->name('admin.documents.update');
+        Route::delete('/{id}', [DocumentsController::class, 'destroy'])->name('admin.documents.destroy');
     });
 });
 
