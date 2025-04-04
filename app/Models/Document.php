@@ -9,11 +9,17 @@ class Document extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'file_path', 'section_id'];
+    protected $fillable = ['title', 'file_path', 'section_id', 'folder_id'];
 
     // Un documento pertenece a una sección
     public function section()
     {
         return $this->belongsTo(DocumentSection::class);
+    }
+
+    // Un documento puede pertenecer a una carpeta (opcional)
+    public function folder()
+    {
+        return $this->belongsTo(DocumentFolder::class);
     }
 }
