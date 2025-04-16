@@ -23,6 +23,12 @@ class DocumentFolder extends Model
         return $this->hasMany(DocumentFolder::class, 'parent_id');
     }
 
+    // 🔁 Subcarpetas recursivas
+    public function childrenRecursive()
+    {
+        return $this->hasMany(DocumentFolder::class, 'parent_id')->with('childrenRecursive');
+    }
+
     // 🔗 Sección (FMVB, FIVB…)
     public function section()
     {

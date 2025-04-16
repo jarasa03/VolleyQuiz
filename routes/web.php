@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\QuestionsController;
 use App\Http\Controllers\TagsController;
 use App\Http\Controllers\DocumentsController;
+use App\Http\Controllers\DocumentFoldersController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -178,6 +179,18 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('/{id}/editar', [DocumentsController::class, 'edit'])->name('admin.documents.edit');
         Route::put('/{id}', [DocumentsController::class, 'update'])->name('admin.documents.update');
         Route::delete('/{id}', [DocumentsController::class, 'destroy'])->name('admin.documents.destroy');
+    });
+
+    // 📋 Gestión de carpetas de documentación
+    Route::prefix('folders')->group(function () {
+        Route::get('/', [DocumentFoldersController::class, 'index'])->name('admin.folders.index');
+        Route::get('/crear', [DocumentFoldersController::class, 'create'])->name('admin.folders.create');
+        Route::post('/', [DocumentFoldersController::class, 'store'])->name('admin.folders.store');
+        Route::get('/{id}/editar', [DocumentFoldersController::class, 'edit'])->name('admin.folders.edit');
+        Route::put('/{id}', [DocumentFoldersController::class, 'update'])->name('admin.folders.update');
+        Route::delete('/{id}', [DocumentFoldersController::class, 'destroy'])->name('admin.folders.destroy');
+        Route::get('/por-seccion/{section_id}', [DocumentFoldersController::class, 'carpetasPorSeccion'])
+            ->name('admin.folders.por-seccion');
     });
 });
 

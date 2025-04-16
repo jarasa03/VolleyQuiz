@@ -28,6 +28,10 @@
                 <form action="{{ route('admin.documents.index') }}" method="GET">
                     <button type="submit" class="admin-button no-select">Gestión de Documentación</button>
                 </form>
+
+                <form action="{{ route('admin.folders.index') }}" method="GET">
+                    <button type="submit" class="admin-button no-select">Gestión de Carpetas</button>
+                </form>
             </div>
         </div>
     </div>
