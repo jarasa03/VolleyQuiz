@@ -194,5 +194,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     });
 });
 
-Route::get('/documentacion', [DocumentsController::class, 'dashboard'])->name('documentacion.index');
+Route::get('/documentacion', [DocumentsController::class, 'dashboard'])->name('documentacion.dashboard');
 Route::get('/documentacion/{seccion}', [DocumentsController::class, 'verSeccion'])->name('documentacion.seccion');
+Route::get('/documentacion/carpeta/{id}', [DocumentsController::class, 'verCarpeta'])->name('documentacion.carpeta');
+Route::get('/documentos/{id}/descargar', [DocumentsController::class, 'download'])->name('documentacion.download');

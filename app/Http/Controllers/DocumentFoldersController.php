@@ -93,18 +93,36 @@ class DocumentFoldersController extends Controller
     public function destroy($id)
     {
         $carpeta = DocumentFolder::findOrFail($id);
-        $ruta = $this->obtenerRutaCarpeta($carpeta);
+
+        $ruta = $this->obtenerRutaCarpeta($carpeta); // e.g. fmvb/reglamento
         $rutaCompleta = "documents/{$ruta}";
 
-        if (Storage::exists($rutaCompleta) && count(Storage::files($rutaCompleta)) === 0 && count(Storage::directories($rutaCompleta)) === 0) {
-            Storage::deleteDirectory($rutaCompleta);
+        // 🧽 Asegurarse de que no tenga documentos ni subcarpetas
+        if (
+            $carpeta->documents()->count() === 0 &&
+            $carpeta->children()->count() === 0
+        ) {
+            // 🧹 Eliminar carpeta física si está vacía
+            if (
+                Storage::disk('public')->exists($rutaCompleta) &&
+                count(Storage::disk('public')->files($rutaCompleta)) === 0 &&
+                count(Storage::disk('public')->directories($rutaCompleta)) === 0
+            ) {
+                Storage::disk('public')->deleteDirectory($rutaCompleta);
+            }
+
+            // 🗑 Eliminar registro
+            $carpeta->delete();
+
+            return redirect()->route('admin.folders.index')
+                ->with('message', '🗑 Carpeta eliminada correctamente.');
         }
 
-        $carpeta->delete();
-
+        // ❌ Si no está vacía, avisar al usuario
         return redirect()->route('admin.folders.index')
-            ->with('message', '🗑 Carpeta eliminada correctamente.');
+            ->with('error', '⚠️ No se puede eliminar una carpeta que contiene subcarpetas o documentos.');
     }
+
 
     // 🔧 Obtener ruta completa recursiva desde la raíz
     private function obtenerRutaCarpeta(DocumentFolder $carpeta)

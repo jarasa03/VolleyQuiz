@@ -38,3 +38,69 @@
 .folders-page {
     padding-bottom: 20px; // o el valor que quieras
 }
+
+.folder-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 180px); // 👉 tamaño fijo
+    justify-content: left; // 👈 centra el grid horizontalmente
+    gap: 2rem;
+    margin-top: 2rem;
+    max-height: 60vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 0.5rem;
+}
+
+.folder-tile {
+    background-color: white;
+    border: 1px solid #eee;
+    border-radius: 1rem;
+    text-decoration: none;
+    color: $color-dark;
+    cursor: pointer;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    // ⬆️ Aumentamos el tamaño mínimo y máximo
+    min-width: 160px;
+    max-width: 220px;
+    min-height: 160px;
+    max-height: 220px;
+    overflow: hidden;
+    img {
+        max-width: 55%;
+        max-height: 55%;
+        object-fit: contain;
+        margin-bottom: 0.5rem;
+    }
+    .folder-name {
+        font-size: 0.9rem;
+        text-align: center;
+        word-break: break-word;
+        padding: 0 0.5rem;
+    }
+}
+
+.breadcrumb {
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    a {
+        text-decoration: none;
+        color: $color-primary;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.documentation-page.documentation-folder .documentation-container {
+    max-width: 90vw;
+    height: 80vh;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 2rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    background-color: $color-light;
+}

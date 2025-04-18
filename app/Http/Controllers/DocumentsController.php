@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use App\Models\DocumentSection;
+use App\Models\DocumentFolder;
 
 class DocumentsController extends Controller
 {
@@ -29,6 +30,7 @@ class DocumentsController extends Controller
             'title' => 'required|string|max:255',
             'section_id' => 'required|exists:document_sections,id',
             'file' => 'required|file|mimes:pdf|max:5120',
+            'folder_id' => 'nullable|exists:document_folders,id',
         ]);
 
         if ($validator->fails()) {
@@ -36,9 +38,13 @@ class DocumentsController extends Controller
         }
 
         $section = DocumentSection::findOrFail($request->section_id);
-        $folder = strtolower($section->name);
 
-        // 🧼 Normalizar tildes manualmente
+        // 🧭 Obtener ruta completa de carpeta (o solo sección si no hay folder_id)
+        $folderPath = $request->folder_id
+            ? DocumentFolder::findOrFail($request->folder_id)->buildPath()
+            : strtolower($section->name);
+
+        // 🧼 Normalizar nombre del archivo
         $slugTitle = strtolower($request->title);
         $slugTitle = strtr($slugTitle, [
             'á' => 'a',
@@ -53,34 +59,33 @@ class DocumentsController extends Controller
             'ö' => 'o',
             'ü' => 'u'
         ]);
-
         $slugTitle = preg_replace('/[^a-z0-9]+/i', '-', $slugTitle);
         $slugTitle = trim($slugTitle, '-');
 
-
-        // 📎 Montar el nombre del archivo
         $filename = $slugTitle . '.' . $request->file('file')->getClientOriginalExtension();
-        $path = "documents/$folder/$filename";
+        $path = "documents/$folderPath/$filename";
 
-        // ❌ Si ya existe, error
-        if (Storage::exists($path)) {
+        if (Storage::disk('public')->exists($path)) {
             return redirect()->back()
                 ->with('error', '⚠️ Ya existe un documento con ese nombre en esta sección.')
                 ->withInput();
         }
 
-        // ✅ Guardar archivo y crear entrada en base de datos
-        $request->file('file')->storeAs("documents/$folder", $filename);
+        // ✅ Subir el archivo
+        Storage::disk('public')->putFileAs("documents/$folderPath", $request->file('file'), $filename);
 
+        // 📝 Crear entrada en BD
         Document::create([
             'title' => $request->title,
             'section_id' => $request->section_id,
+            'folder_id' => $request->folder_id,
             'file_path' => $path,
         ]);
 
         return redirect()->route('admin.documents.index')
             ->with('message', '✅ Documento subido correctamente.');
     }
+
 
 
     public function adminIndex(Request $request)
@@ -104,27 +109,21 @@ class DocumentsController extends Controller
 
     public function verSeccion($seccion)
     {
-        $vista = match ($seccion) {
-            'general' => 'documentation.general',
-            'fivb' => 'documentation.fivb',
-            'rfevb' => 'documentation.rfevb',
-            'fmvb' => 'documentation.territoriales.fmvb',
-            default => null,
-        };
+        $section = DocumentSection::where('name', $seccion)->firstOrFail();
 
-        if (!$vista || !view()->exists($vista)) {
-            abort(404);
-        }
+        $carpetas = DocumentFolder::where('section_id', $section->id)
+            ->whereNull('parent_id')
+            ->get();
 
-        // Obtener documentos según el nombre de la sección
-        $documentos = Document::whereHas(
-            'section',
-            fn($q) =>
-            $q->where('name', $seccion)
-        )->get();
+        $documentos = Document::where('section_id', $section->id)
+            ->whereNull('folder_id')
+            ->get();
 
-        return view($vista, [
+        return view('documentation.folder', [
             'seccion' => strtoupper($seccion),
+            'section' => $section,
+            'carpeta' => null,
+            'subcarpetas' => $carpetas,
             'documentos' => $documentos
         ]);
     }
@@ -154,11 +153,12 @@ class DocumentsController extends Controller
     {
         $document = Document::find($id);
 
-        if (!$document || !Storage::exists($document->file_path)) {
+        if (!$document || !Storage::disk('public')->exists($document->file_path)) {
             return response()->json(['message' => 'Documento no encontrado'], 404);
         }
 
-        return Storage::download($document->file_path);
+        $filePath = storage_path('app/public/' . $document->file_path);
+        return response()->download($filePath, basename($filePath));
     }
 
     public function update(Request $request, $id)
@@ -169,17 +169,21 @@ class DocumentsController extends Controller
             'title' => 'required|string|max:255',
             'section_id' => 'required|exists:document_sections,id',
             'file' => 'nullable|file|mimes:pdf|max:5120',
+            'folder_id' => 'nullable|exists:document_folders,id',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        // 🗂️ Obtener sección actualizada
         $section = DocumentSection::findOrFail($request->section_id);
-        $folder = strtolower($section->name);
 
-        // 🧼 Normalizar el título (acentos y símbolos raros)
+        // 🧭 Obtener ruta correcta
+        $folderPath = $request->folder_id
+            ? DocumentFolder::findOrFail($request->folder_id)->buildPath()
+            : strtolower($section->name);
+
+        // 🧼 Normalizar nombre
         $slugTitle = strtolower($request->title);
         $slugTitle = strtr($slugTitle, [
             'á' => 'a',
@@ -204,39 +208,37 @@ class DocumentsController extends Controller
         $slugTitle = trim($slugTitle, '-');
 
         $filename = $slugTitle . '.pdf';
-        $newPath = "documents/$folder/$filename";
+        $newPath = "documents/$folderPath/$filename";
 
         if ($request->hasFile('file')) {
-            // 🚫 Prevenir sobreescritura si ya existe otro con ese nombre en esta sección
-            if (Storage::exists($newPath) && $newPath !== $document->file_path) {
+            if (Storage::disk('public')->exists($newPath) && $newPath !== $document->file_path) {
                 return redirect()->back()
-                    ->with('error', '⚠️ Ya existe un documento con ese nombre en esta sección.')
+                    ->with('error', '⚠️ Ya existe un documento con ese nombre en esta carpeta.')
                     ->withInput();
             }
 
-            // 🧹 Borrar el anterior y subir el nuevo
-            Storage::delete($document->file_path);
-            $request->file('file')->storeAs("documents/$folder", $filename);
+            Storage::disk('public')->delete($document->file_path);
+            Storage::disk('public')->putFileAs("documents/$folderPath", $request->file('file'), $filename);
             $document->file_path = $newPath;
         } elseif (
             $document->section_id != $request->section_id ||
+            $document->folder_id != $request->folder_id ||
             basename($document->file_path) !== $filename
         ) {
-            // ✋ Mover el archivo si cambió la sección o el título
-            if (Storage::exists($newPath)) {
+            if (Storage::disk('public')->exists($newPath)) {
                 return redirect()->back()
-                    ->with('error', '⚠️ Ya existe un documento con ese nombre en la nueva sección.')
+                    ->with('error', '⚠️ Ya existe un documento con ese nombre en la nueva carpeta.')
                     ->withInput();
             }
 
-            Storage::move($document->file_path, $newPath);
+            Storage::disk('public')->move($document->file_path, $newPath);
             $document->file_path = $newPath;
         }
 
-        // 📝 Actualizar datos del documento
         $document->update([
             'title' => $request->title,
             'section_id' => $request->section_id,
+            'folder_id' => $request->folder_id,
         ]);
 
         return redirect()->route('admin.documents.index')
@@ -244,13 +246,58 @@ class DocumentsController extends Controller
     }
 
 
+
     public function destroy($id)
     {
         $document = Document::findOrFail($id);
 
-        Storage::delete($document->file_path);
+        $filePath = $document->file_path;
+
+        // 🗑 Borrar archivo del disco (public)
+        if (Storage::disk('public')->exists($filePath)) {
+            Storage::disk('public')->delete($filePath);
+        }
+
+        // ✅ Eliminar registro de base de datos
         $document->delete();
 
+        // 📂 OPCIONAL: borrar carpeta si queda vacía (solo si no tiene más archivos)
+        $folderDir = dirname($filePath);
+        if (
+            Storage::disk('public')->exists($folderDir) &&
+            count(Storage::disk('public')->files($folderDir)) === 0 &&
+            count(Storage::disk('public')->directories($folderDir)) === 0
+        ) {
+            Storage::disk('public')->deleteDirectory($folderDir);
+        }
+
         return redirect()->route('admin.documents.index')->with('message', '🗑 Documento eliminado correctamente.');
+    }
+
+
+    public function verCarpeta($id)
+    {
+        $carpeta = DocumentFolder::with('section')->findOrFail($id);
+
+        $subcarpetas = $carpeta->children;
+        $documentos = $carpeta->documents;
+
+        // 🧭 Construir breadcrumb desde la carpeta hacia arriba
+        $breadcrumb = [];
+        $actual = $carpeta;
+        while ($actual) {
+            $breadcrumb[] = $actual;
+            $actual = $actual->parent;
+        }
+        $breadcrumb = array_reverse($breadcrumb); // para que empiece por la raíz
+
+        return view('documentation.folder', [
+            'section' => $carpeta->section,
+            'seccion' => strtoupper($carpeta->section->name),
+            'carpeta' => $carpeta,
+            'subcarpetas' => $subcarpetas,
+            'documentos' => $documentos,
+            'breadcrumb' => $breadcrumb,
+        ]);
     }
 }

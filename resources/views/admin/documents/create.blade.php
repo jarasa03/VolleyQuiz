@@ -52,6 +52,15 @@
                 </select>
             </div>
 
+            <!-- Carpeta -->
+            <div class="form-group">
+                <label for="folder_id">Carpeta (opcional)</label>
+                <select name="folder_id" id="folder_id">
+                    <option value="">-- Sin carpeta --</option>
+                </select>
+            </div>
+
+
             <!-- Archivo -->
             <div class="form-group">
                 <label for="file">Archivo PDF</label>
@@ -65,3 +74,46 @@
         </form>
     </div>
 @endsection
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sectionSelect = document.getElementById('section_id');
+        const folderSelect = document.getElementById('folder_id');
+
+        const renderOptions = (carpetas, nivel = 0) => {
+            carpetas.forEach(carpeta => {
+                const option = document.createElement('option');
+                option.value = carpeta.id;
+                option.textContent = '— '.repeat(nivel) + carpeta.name;
+                folderSelect.appendChild(option);
+
+                if (carpeta.children_recursive && carpeta.children_recursive.length > 0) {
+                    renderOptions(carpeta.children_recursive, nivel + 1);
+                }
+            });
+        };
+
+        sectionSelect.addEventListener('change', function() {
+            const sectionId = this.value;
+            folderSelect.innerHTML = '<option value="">-- Cargando carpetas... --</option>';
+
+            if (!sectionId) return;
+
+            fetch(`/admin/folders/por-seccion/${sectionId}`)
+                .then(response => response.json())
+                .then(data => {
+                    folderSelect.innerHTML = '<option value="">-- Sin carpeta --</option>';
+                    renderOptions(data);
+                })
+                .catch(() => {
+                    folderSelect.innerHTML =
+                        '<option value="">-- Error al cargar carpetas --</option>';
+                });
+        });
+
+        // Trigger inicial si ya hay una sección seleccionada
+        if (sectionSelect.value) {
+            sectionSelect.dispatchEvent(new Event('change'));
+        }
+    });
+</script>

@@ -6,7 +6,7 @@
 
     <!-- Sección Central: Links -->
     <div class="navbar__links">
-        <a href="{{ route('documentacion.index') }}" class="navbar__link">Documentación</a>
+        <a href="{{ route('documentacion.dashboard') }}" class="navbar__link">Documentación</a>
         <a href="#" class="navbar__link">Arcade</a>
         <a href="#" class="navbar__link">Zen</a>
         <a href="#" class="navbar__link">Niveles</a>

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 
 class DocumentFolder extends Model
 {
@@ -39,5 +40,19 @@ class DocumentFolder extends Model
     public function documents()
     {
         return $this->hasMany(Document::class, 'folder_id');
+    }
+
+    public function buildPath()
+    {
+        $segments = [];
+        $current = $this;
+
+        while ($current) {
+            array_unshift($segments, Str::slug($current->name));
+            $current = $current->parent;
+        }
+
+        $section = strtolower($this->section->name);
+        return $section . '/' . implode('/', $segments);
     }
 }
