@@ -13,21 +13,22 @@ class DocumentFoldersController extends Controller
     // 📁 Mostrar todas las carpetas principales con sus subcarpetas
     public function index(Request $request)
     {
-        $query = DocumentFolder::with('children')->whereNull('parent_id');
+        $secciones = DocumentSection::with(['folders' => function ($query) use ($request) {
+            $query->whereNull('parent_id')->with('children');
 
-        if ($request->has('search') && $request->search !== '') {
-            $searchTerm = $request->search;
+            if ($request->has('search') && $request->search !== '') {
+                $searchTerm = $request->search;
 
-            $query->where('name', 'like', "%{$searchTerm}%")
-                ->orWhereHas('children', function ($q) use ($searchTerm) {
-                    $q->where('name', 'like', "%{$searchTerm}%");
-                });
-        }
+                $query->where('name', 'like', "%{$searchTerm}%")
+                    ->orWhereHas('children', function ($q) use ($searchTerm) {
+                        $q->where('name', 'like', "%{$searchTerm}%");
+                    });
+            }
+        }])->get();
 
-        $carpetas = $query->get();
-
-        return view('admin.folders.index', compact('carpetas'));
+        return view('admin.folders.index', compact('secciones'));
     }
+
 
     // ➕ Mostrar formulario para crear carpeta
     public function create()

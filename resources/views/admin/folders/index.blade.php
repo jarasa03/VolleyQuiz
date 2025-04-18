@@ -39,11 +39,22 @@
             </form>
         @endif
 
-        <!-- Lista recursiva -->
-        <ul id="folders-tree" class="folder-tree">
-            @foreach ($carpetas as $carpeta)
-                @include('admin.folders.partials.folder', ['carpeta' => $carpeta, 'nivel' => 0])
-            @endforeach
-        </ul>
+        <!-- Mostrar carpetas agrupadas por sección -->
+        @foreach ($secciones as $seccion)
+            <h2 class="section-title">📂 {{ strtoupper($seccion->name) }}</h2>
+            @php
+                $carpetasRaiz = $seccion->folders->whereNull('parent_id');
+            @endphp
+
+            @if ($carpetasRaiz->isEmpty())
+                <p class="no-folders">No hay carpetas en esta sección.</p>
+            @else
+                <ul class="folder-tree">
+                    @foreach ($carpetasRaiz as $carpeta)
+                        @include('admin.folders.partials.folder', ['carpeta' => $carpeta, 'nivel' => 0])
+                    @endforeach
+                </ul>
+            @endif
+        @endforeach
     </div>
 @endsection

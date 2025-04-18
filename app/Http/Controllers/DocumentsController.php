@@ -113,10 +113,12 @@ class DocumentsController extends Controller
 
         $carpetas = DocumentFolder::where('section_id', $section->id)
             ->whereNull('parent_id')
+            ->orderBy('name') // 👈 orden alfabético por nombre
             ->get();
 
         $documentos = Document::where('section_id', $section->id)
             ->whereNull('folder_id')
+            ->orderBy('title') // 👈 orden alfabético por título
             ->get();
 
         return view('documentation.folder', [
@@ -279,17 +281,17 @@ class DocumentsController extends Controller
     {
         $carpeta = DocumentFolder::with('section')->findOrFail($id);
 
-        $subcarpetas = $carpeta->children;
-        $documentos = $carpeta->documents;
+        $subcarpetas = $carpeta->children()->orderBy('name')->get(); // 👈 Añade esto
+        $documentos = $carpeta->documents()->orderBy('title')->get(); // 👈 Y esto también
 
-        // 🧭 Construir breadcrumb desde la carpeta hacia arriba
+        // 🧭 Breadcrumb
         $breadcrumb = [];
         $actual = $carpeta;
         while ($actual) {
             $breadcrumb[] = $actual;
             $actual = $actual->parent;
         }
-        $breadcrumb = array_reverse($breadcrumb); // para que empiece por la raíz
+        $breadcrumb = array_reverse($breadcrumb);
 
         return view('documentation.folder', [
             'section' => $carpeta->section,

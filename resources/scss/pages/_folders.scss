@@ -1,10 +1,25 @@
-#folders-tree li {
-    list-style-type: none;
+/* Eliminar puntos de las listas */
+
+#folders-tree,
+#folders-tree ul,
+#folders-tree li,
+.folder-item-li {
+    list-style-type: none !important;
+    /* Eliminar puntos de lista */
+    margin-left: 0 !important;
+    /* Aseguramos que no haya márgenes innecesarios */
+    padding-left: 0 !important;
+    /* Quitamos el padding para alinear correctamente */
+}
+
+.folder-tree > li {
+    list-style-type: none !important;
+    /* Aseguramos que los li dentro de folder-tree no tengan puntos */
 }
 
 .folder-tree {
-    padding-left: 0;
-    list-style: none;
+    padding-left: 0 !important;
+    list-style: none !important;
     margin-top: 1rem;
     margin-bottom: 0 !important;
 }
@@ -22,6 +37,8 @@
 }
 
 .delete-folder-btn {
+    width: 28px;
+    height: 28px;
     padding: 2px 6px;
     font-size: 0.8rem;
     background-color: $color-accent;
@@ -35,14 +52,35 @@
     }
 }
 
+.edit-folder-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+    background-color: $color-primary;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease-in-out;
+    &:hover {
+        background-color: darken($color-primary, 10%);
+        cursor: pointer;
+    }
+}
+
 .folders-page {
-    padding-bottom: 20px; // o el valor que quieras
+    padding-bottom: 20px;
+    /* o el valor que quieras */
 }
 
 .folder-grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, 180px); // 👉 tamaño fijo
-    justify-content: left; // 👈 centra el grid horizontalmente
+    grid-template-columns: repeat(auto-fit, 180px);
+    /* 👉 tamaño fijo */
+    justify-content: left;
+    /* 👈 centra el grid horizontalmente */
     gap: 2rem;
     margin-top: 2rem;
     max-height: 60vh;
@@ -63,7 +101,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    // ⬆️ Aumentamos el tamaño mínimo y máximo
     min-width: 160px;
     max-width: 220px;
     min-height: 160px;
@@ -77,9 +114,22 @@
     }
     .folder-name {
         font-size: 0.9rem;
+        color: $color-dark;
+        display: -webkit-box;
+        /* Usamos box-flex para manejar el contenido */
+        -webkit-box-orient: vertical;
+        /* Establecer la dirección vertical */
+        -webkit-line-clamp: 2;
+        /* Limitar el texto a 2 líneas en navegadores que usan -webkit */
+        line-clamp: 2;
+        /* Propiedad estándar para otros navegadores */
+        overflow: hidden;
+        /* Ocultar texto que se desborda */
+        text-overflow: ellipsis;
+        /* Mostrar puntos suspensivos al final */
+        width: 140px;
+        /* Establecer un tamaño fijo para el contenedor */
         text-align: center;
-        word-break: break-word;
-        padding: 0 0.5rem;
     }
 }
 

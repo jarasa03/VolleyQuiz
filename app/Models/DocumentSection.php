@@ -16,4 +16,10 @@ class DocumentSection extends Model
     {
         return $this->hasMany(Document::class);
     }
+
+    // Una sección tiene muchas carpetas
+    public function folders()
+    {
+        return $this->hasMany(DocumentFolder::class, 'section_id');
+    }
 }
