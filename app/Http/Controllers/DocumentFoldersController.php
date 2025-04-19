@@ -88,18 +88,57 @@ class DocumentFoldersController extends Controller
         return view('admin.folders.edit', compact('carpeta', 'carpetasPadre', 'secciones'));
     }
 
-    // 🔁 Actualizar una carpeta existente
     public function update(Request $request, $id)
     {
         $carpeta = DocumentFolder::findOrFail($id);
 
+        // Validación de los datos del formulario
         $request->validate([
             'name' => 'required|string|max:255|unique:document_folders,name,' . $carpeta->id,
             'section_id' => 'required|exists:document_sections,id',
             'parent_id' => 'nullable|exists:document_folders,id|not_in:' . $carpeta->id,
         ]);
 
-        $carpeta->update($request->only('name', 'parent_id', 'section_id'));
+        // Ruta original de la carpeta antes de renombrar
+        $oldPath = $this->obtenerRutaCarpeta($carpeta);
+
+        // Verificar si la carpeta física existe
+        if (!Storage::disk('public')->exists("documents/{$oldPath}")) {
+            dd("La carpeta antigua no existe en el sistema de archivos: documents/{$oldPath}");
+        }
+
+        // Normalizar el nombre de la carpeta
+        $newName = strtolower($request->name);
+        $newName = strtr($newName, [
+            'á' => 'a',
+            'é' => 'e',
+            'í' => 'i',
+            'ó' => 'o',
+            'ú' => 'u',
+            'ñ' => 'n',
+            'ä' => 'a',
+            'ë' => 'e',
+            'ï' => 'i',
+            'ö' => 'o',
+            'ü' => 'u'
+        ]);
+        $newName = preg_replace('/[^a-z0-9]+/i', '-', $newName);
+        $newName = trim($newName, '-');
+
+        // Crear la nueva ruta con el nuevo nombre
+        $newPath = dirname($oldPath) . '/' . $newName;
+
+        // Verificar si la carpeta con el nuevo nombre ya existe
+        if (Storage::disk('public')->exists("documents/{$newPath}")) {
+            return redirect()->back()->with('error', '⚠️ Ya existe una carpeta con ese nombre.')->withInput();
+        }
+
+        // Renombrar la carpeta física (si la carpeta no existe con el nuevo nombre)
+        Storage::disk('public')->move("documents/{$oldPath}", "documents/{$newPath}");
+
+        // Actualizar la base de datos con el nuevo nombre
+        $carpeta->name = $request->name;
+        $carpeta->save();
 
         return redirect()->route('admin.folders.index')
             ->with('message', '✅ Carpeta actualizada correctamente.');
