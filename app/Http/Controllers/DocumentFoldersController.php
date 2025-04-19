@@ -45,12 +45,26 @@ class DocumentFoldersController extends Controller
     // 💾 Guardar nueva carpeta
     public function store(Request $request)
     {
+        // Validación básica sin la regla 'unique'
         $request->validate([
-            'name' => 'required|string|max:255|unique:document_folders,name',
+            'name' => 'required|string|max:255',  // Eliminamos 'unique' para no hacer la validación automática
             'section_id' => 'required|exists:document_sections,id',
             'parent_id' => 'nullable|exists:document_folders,id'
         ]);
 
+        // Comprobar si ya existe una carpeta con ese nombre en la misma sección
+        $existeCarpeta = DocumentFolder::where('name', $request->name)
+            ->where('section_id', $request->section_id)
+            ->first();
+
+        if ($existeCarpeta) {
+            // Si ya existe la carpeta, redirigir con un mensaje de error
+            return redirect()->back()
+                ->with('error', '⚠️ Ya existe una carpeta con ese nombre en esta sección.')
+                ->withInput();
+        }
+
+        // Si no existe, crear la carpeta
         $carpeta = DocumentFolder::create($request->only('name', 'parent_id', 'section_id'));
 
         // 🛠 Crear carpeta en disco
@@ -60,6 +74,7 @@ class DocumentFoldersController extends Controller
         return redirect()->route('admin.folders.index')
             ->with('message', '📁 Carpeta creada correctamente.');
     }
+
 
     // ✏️ Mostrar formulario de edición de carpeta
     public function edit($id)
