@@ -9,7 +9,7 @@ class Document extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'file_path', 'section_id', 'folder_id'];
+    protected $fillable = ['title', 'file_path', 'section_id', 'folder_id', 'year'];
 
     // Un documento pertenece a una sección
     public function section()

@@ -31,6 +31,7 @@ class DocumentsController extends Controller
             'section_id' => 'required|exists:document_sections,id',
             'file' => 'required|file|mimes:pdf,docx,doc,xls,xlsx|max:5120',
             'folder_id' => 'nullable|exists:document_folders,id',
+            'year' => 'nullable|string|max:9',
         ]);
 
         if ($validator->fails()) {
@@ -80,13 +81,12 @@ class DocumentsController extends Controller
             'section_id' => $request->section_id,
             'folder_id' => $request->folder_id,
             'file_path' => $path,
+            'year' => $request->year ?? null,  // Guardar el año si está presente
         ]);
 
         return redirect()->route('admin.documents.index')
             ->with('message', '✅ Documento subido correctamente.');
     }
-
-
 
 
     public function adminIndex(Request $request)
@@ -171,8 +171,9 @@ class DocumentsController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'section_id' => 'required|exists:document_sections,id',
-            'file' => 'required|file|mimes:pdf,docx,doc,xls,xlsx|max:5120',
+            'file' => 'nullable|file|mimes:pdf,docx,doc,xls,xlsx|max:5120',
             'folder_id' => 'nullable|exists:document_folders,id',
+            'year' => 'nullable|string|max:9', // Asegúrate de validar el año correctamente
         ]);
 
         if ($validator->fails()) {
@@ -210,38 +211,33 @@ class DocumentsController extends Controller
         $slugTitle = preg_replace('/[^a-z0-9]+/i', '-', $slugTitle);
         $slugTitle = trim($slugTitle, '-');
 
-        $filename = $slugTitle . '.' . $request->file('file')->getClientOriginalExtension();
-        $newPath = "documents/$folderPath/$filename";
-
+        // Solo generar el nombre del archivo si se ha subido uno nuevo
         if ($request->hasFile('file')) {
+            $filename = $slugTitle . '.' . $request->file('file')->getClientOriginalExtension();
+            $newPath = "documents/$folderPath/$filename";
+
             if (Storage::disk('public')->exists($newPath) && $newPath !== $document->file_path) {
                 return redirect()->back()
                     ->with('error', '⚠️ Ya existe un documento con ese nombre en esta carpeta.')
                     ->withInput();
             }
 
+            // Borrar el archivo anterior si se va a reemplazar
             Storage::disk('public')->delete($document->file_path);
+            // Subir el nuevo archivo
             Storage::disk('public')->putFileAs("documents/$folderPath", $request->file('file'), $filename);
-            $document->file_path = $newPath;
-        } elseif (
-            $document->section_id != $request->section_id ||
-            $document->folder_id != $request->folder_id ||
-            basename($document->file_path) !== $filename
-        ) {
-            if (Storage::disk('public')->exists($newPath)) {
-                return redirect()->back()
-                    ->with('error', '⚠️ Ya existe un documento con ese nombre en la nueva carpeta.')
-                    ->withInput();
-            }
 
-            Storage::disk('public')->move($document->file_path, $newPath);
+            // Actualizar la ruta del archivo en la base de datos
             $document->file_path = $newPath;
         }
 
+
+        // Actualizar los demás campos
         $document->update([
             'title' => $request->title,
             'section_id' => $request->section_id,
             'folder_id' => $request->folder_id,
+            'year' => $request->year,  // Actualiza el año
         ]);
 
         return redirect()->route('admin.documents.index')

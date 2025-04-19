@@ -60,6 +60,13 @@
                 </select>
             </div>
 
+            <!-- Año -->
+            <div class="form-group">
+                <label for="year">Año del Documento (opcional)</label>
+                <input type="number" name="year" id="year" value="{{ old('year') }}" min="1900"
+                    max="2100" class="form-control">
+                <small>Deja este campo vacío si no quieres agregar un año.</small>
+            </div>
 
             <!-- Archivo -->
             <div class="form-group">

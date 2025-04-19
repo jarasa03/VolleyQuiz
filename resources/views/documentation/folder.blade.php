@@ -52,7 +52,14 @@
                         @elseif (strpos($documento->file_path, '.xls') !== false || strpos($documento->file_path, '.xlsx') !== false)
                             <img src="{{ asset('images/excel-icon.png') }}" alt="Excel" class="excel-icon">
                         @endif
+
+                        <!-- Título del documento -->
                         <span class="folder-name">{{ $documento->title }}</span>
+
+                        <!-- Mostrar el año si existe -->
+                        @if ($documento->year)
+                            <span class="document-year">{{ $documento->year }}</span>
+                        @endif
                     </a>
                 @empty
                     @if ($subcarpetas->isEmpty())

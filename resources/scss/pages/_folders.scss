@@ -154,3 +154,28 @@
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     background-color: $color-light;
 }
+
+.folder-tile {
+    position: relative;
+    overflow: visible !important;
+    /* Aseguramos que el contenido pueda salirse */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.document-year {
+    font-family: "Arial Rounded", sans-serif;
+    position: absolute;
+    top: 50px;
+    right: -10px;
+    color: #f15642;
+    font-size: 25px;
+    font-weight: bold;
+    padding: 5px 10px;
+    transform: rotate(45deg);
+    /* Aplica rotación de 45 grados */
+    transform-origin: top right;
+    /* Asegura que gire desde la esquina */
+    z-index: 10000;
+}
