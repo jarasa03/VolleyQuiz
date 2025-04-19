@@ -43,7 +43,8 @@
 
                 {{-- 📄 DOCUMENTOS --}}
                 @forelse ($documentos as $documento)
-                    <a href="{{ Storage::url($documento->file_path) }}" class="folder-tile no-select" target="_blank">
+                    <a href="{{ Storage::url($documento->file_path) }}" class="folder-tile no-select" target="_blank"
+                        title="{{ $documento->title }}">
                         @if (strpos($documento->file_path, '.pdf') !== false)
                             <img src="{{ asset('images/pdf-icon.png') }}" alt="PDF" class="pdf-icon">
                         @elseif (strpos($documento->file_path, '.docx') !== false || strpos($documento->file_path, '.doc') !== false)
@@ -58,6 +59,7 @@
                         <p>No hay documentos ni carpetas en esta sección.</p>
                     @endif
                 @endforelse
+
 
             </div>
         </div>
