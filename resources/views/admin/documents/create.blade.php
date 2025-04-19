@@ -63,8 +63,8 @@
 
             <!-- Archivo -->
             <div class="form-group">
-                <label for="file">Archivo PDF</label>
-                <input type="file" id="file" name="file" accept=".pdf" required>
+                <label for="file">Archivo</label>
+                <input type="file" id="file" name="file" accept=".pdf,.docx,.doc,.xls,.xlsx" required>
             </div>
 
             <div class="form-actions">

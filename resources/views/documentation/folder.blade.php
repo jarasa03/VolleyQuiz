@@ -37,15 +37,20 @@
                         <img src="{{ asset('images/folder-icon.png') }}" alt="Carpeta" class="folder-icon">
                         <span class="folder-name">{{ $carpeta->name }}</span>
                     </a>
-
                 @empty
                     {{-- Nada, por si no hay subcarpetas --}}
                 @endforelse
 
-                {{-- 📄 DOCUMENTOS PDF --}}
+                {{-- 📄 DOCUMENTOS --}}
                 @forelse ($documentos as $documento)
                     <a href="{{ Storage::url($documento->file_path) }}" class="folder-tile no-select" target="_blank">
-                        <img src="{{ asset('images/pdf-icon.png') }}" alt="PDF" class="pdf-icon">
+                        @if (strpos($documento->file_path, '.pdf') !== false)
+                            <img src="{{ asset('images/pdf-icon.png') }}" alt="PDF" class="pdf-icon">
+                        @elseif (strpos($documento->file_path, '.docx') !== false || strpos($documento->file_path, '.doc') !== false)
+                            <img src="{{ asset('images/word-icon.png') }}" alt="Word" class="word-icon">
+                        @elseif (strpos($documento->file_path, '.xls') !== false || strpos($documento->file_path, '.xlsx') !== false)
+                            <img src="{{ asset('images/excel-icon.png') }}" alt="Excel" class="excel-icon">
+                        @endif
                         <span class="folder-name">{{ $documento->title }}</span>
                     </a>
                 @empty
@@ -53,6 +58,7 @@
                         <p>No hay documentos ni carpetas en esta sección.</p>
                     @endif
                 @endforelse
+
             </div>
         </div>
     </div>

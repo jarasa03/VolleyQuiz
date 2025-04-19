@@ -29,7 +29,7 @@ class DocumentsController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'section_id' => 'required|exists:document_sections,id',
-            'file' => 'required|file|mimes:pdf|max:5120',
+            'file' => 'required|file|mimes:pdf,docx,doc,xls,xlsx|max:5120',
             'folder_id' => 'nullable|exists:document_folders,id',
         ]);
 
@@ -85,6 +85,7 @@ class DocumentsController extends Controller
         return redirect()->route('admin.documents.index')
             ->with('message', '✅ Documento subido correctamente.');
     }
+
 
 
 
@@ -170,7 +171,7 @@ class DocumentsController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'section_id' => 'required|exists:document_sections,id',
-            'file' => 'nullable|file|mimes:pdf|max:5120',
+            'file' => 'required|file|mimes:pdf,docx,doc,xls,xlsx|max:5120',
             'folder_id' => 'nullable|exists:document_folders,id',
         ]);
 
@@ -209,7 +210,7 @@ class DocumentsController extends Controller
         $slugTitle = preg_replace('/[^a-z0-9]+/i', '-', $slugTitle);
         $slugTitle = trim($slugTitle, '-');
 
-        $filename = $slugTitle . '.pdf';
+        $filename = $slugTitle . '.' . $request->file('file')->getClientOriginalExtension();
         $newPath = "documents/$folderPath/$filename";
 
         if ($request->hasFile('file')) {
@@ -246,6 +247,7 @@ class DocumentsController extends Controller
         return redirect()->route('admin.documents.index')
             ->with('message', '✅ Documento actualizado correctamente.');
     }
+
 
 
 
