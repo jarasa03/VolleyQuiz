@@ -1,6 +1,8 @@
 @import "../base/variables"; // Importar las variables de color
 .admin-users-container {
     max-width: 1800px;
+    max-height: 1000px;
+    overflow: auto;
     margin: 50px auto;
     padding: 30px;
     padding-bottom: 0;
@@ -8,13 +10,18 @@
     background: $color-light;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    text-align: left;
     width: 100%;
+    .btn.add-user {
+        display: flex;
+        justify-self: center;
+    }
     h1 {
         color: $color-dark;
         font-size: 26px;
         margin-bottom: 20px;
         margin-top: 0;
+        text-align: center;
     }
     .user-table {
         width: 100%;
