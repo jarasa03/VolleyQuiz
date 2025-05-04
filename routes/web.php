@@ -14,7 +14,7 @@ use App\Http\Controllers\DocumentsController;
 use App\Http\Controllers\DocumentFoldersController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
 
 Route::get('/send-test-email', function () {
@@ -48,8 +48,8 @@ Route::get('/dashboard', function () {
     if (!Auth::check()) {
         return redirect()->route('auth.login')->with('error', '❌ Debes iniciar sesión antes de acceder.');
     }
-    return view('dashboard');
-})->name('dashboard');
+    return view('home');
+})->name('home');
 
 // Ruta para cerrar sesión
 Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');

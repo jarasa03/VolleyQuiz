@@ -1,7 +1,7 @@
 <nav class="navbar">
     <!-- Sección Izquierda: Logo -->
     <div class="navbar__logo">
-        <a href="{{ route('dashboard') }}">🏐 VolleyQuiz</a>
+        <a href="{{ route('home') }}">🏐 VolleyQuiz</a>
     </div>
 
     <!-- Sección Central: Links -->
