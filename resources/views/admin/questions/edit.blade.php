@@ -27,7 +27,7 @@
             </div>
         @endif
 
-        <form action="{{ route('admin.questions.update', $question->id) }}" method="POST">
+        <form action="{{ route('admin.questions.update', $question->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -142,6 +142,27 @@
                         Falso
                     </label>
                 </div>
+            </div>
+
+            <!-- Justificación de la respuesta -->
+            <div class="form-group">
+                <label for="explanation_text">Justificación (texto):</label>
+                <textarea name="explanation_text" id="explanation_text" rows="4" class="form-control">{{ old('explanation_text', optional($question->explanation)->text) }}</textarea>
+            </div>
+
+            <!-- Imagen de la justificación -->
+            <div class="form-group">
+                <label for="explanation_image">Imagen actual de la justificación:</label><br>
+
+                @if ($question->explanation && $question->explanation->image_path)
+                    <img src="{{ asset('storage/' . $question->explanation->image_path) }}"
+                        alt="Imagen actual de explicación" style="max-width: 300px; margin-bottom: 10px;">
+                @else
+                    <p class="text-muted">No hay imagen asociada.</p>
+                @endif
+
+                <label for="explanation_image">Subir nueva imagen (reemplazará la anterior):</label>
+                <input type="file" name="explanation_image" id="explanation_image" class="form-control">
             </div>
 
             <div class="form-actions">

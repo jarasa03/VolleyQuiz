@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Routing\Controller;
 use App\Traits\AuthHelpers;
 use App\Traits\AdminMiddleware;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Controlador para la gestión de preguntas.
@@ -51,6 +52,8 @@ class QuestionsController extends Controller
             'question_text' => 'required|string',
             'question_type' => 'required|string|in:multiple_choice,true_false',
             'category_id'   => 'required|exists:categories,id',
+            'explanation_text' => 'nullable|string',
+            'explanation_image' => 'nullable|image|max:2048',
         ]);
 
         $question = Question::create($validatedData);
@@ -81,21 +84,29 @@ class QuestionsController extends Controller
             ]);
         }
 
-        // ✅ Asignar tags (deserializando el string JSON del input oculto)
+        // ✅ Asignar tags
         $tagIds = json_decode($request->input('tags', '[]'), true);
-
         if (is_array($tagIds) && !empty($tagIds)) {
             $validTags = Tag::whereIn('id', $tagIds)->pluck('id')->toArray();
             $question->tags()->sync($validTags);
         }
 
+        // ✅ Crear justificación si se proporciona texto o imagen
+        if ($request->filled('explanation_text') || $request->hasFile('explanation_image')) {
+            $imagePath = null;
+
+            if ($request->hasFile('explanation_image')) {
+                $imagePath = $request->file('explanation_image')->store('explanations', 'public');
+            }
+
+            $question->explanation()->create([
+                'text' => $request->input('explanation_text'),
+                'image_path' => $imagePath,
+            ]);
+        }
+
         return redirect()->route('admin.questions.index')->with('success', '✅ Pregunta creada con éxito.');
     }
-
-
-
-
-
 
     // Mostrar formulario de edición
     public function edit($id)
@@ -121,19 +132,21 @@ class QuestionsController extends Controller
             'category_id'   => 'required|exists:categories,id',
             'tags'          => 'nullable|array',
             'tags.*'        => 'exists:tags,id',
+            'explanation_text' => 'nullable|string',
+            'explanation_image' => 'nullable|image|max:2048',
         ]);
 
         $question->update($validatedData);
 
+        // Sincronizar tags
         $tagIds = $request->input('tags', []);
         $validTags = Tag::whereIn('id', $tagIds)->pluck('id')->toArray();
         $question->tags()->sync($validTags);
 
-
-        // 🧹 Limpiar respuestas anteriores
+        // 🧹 Eliminar respuestas anteriores
         $question->answers()->delete();
 
-        // 🔄 Reinsertar según tipo de pregunta
+        // 🔄 Reinsertar respuestas según el tipo de pregunta
         if ($validatedData['question_type'] === 'multiple_choice') {
             $answers = $request->input('answers', []);
             $correctFlags = $request->input('correct_answers', []);
@@ -160,9 +173,36 @@ class QuestionsController extends Controller
             ]);
         }
 
+        // ✅ Crear o actualizar la justificación (con borrado de imagen anterior)
+        if ($request->filled('explanation_text') || $request->hasFile('explanation_image')) {
+            $existingExplanation = $question->explanation;
+            $imagePath = $existingExplanation->image_path ?? null;
+
+            if ($request->hasFile('explanation_image')) {
+                // Borrar imagen anterior si existe
+                if ($imagePath && Storage::disk('public')->exists($imagePath)) {
+                    Storage::disk('public')->delete($imagePath);
+                }
+
+                // Subir nueva imagen
+                $imagePath = $request->file('explanation_image')->store('explanations', 'public');
+            }
+
+            if ($existingExplanation) {
+                $existingExplanation->update([
+                    'text' => $request->input('explanation_text'),
+                    'image_path' => $imagePath,
+                ]);
+            } else {
+                $question->explanation()->create([
+                    'text' => $request->input('explanation_text'),
+                    'image_path' => $imagePath,
+                ]);
+            }
+        }
+
         return redirect()->route('admin.questions.index')->with('success', '✅ Pregunta actualizada correctamente.');
     }
-
 
     // Eliminar una pregunta
     public function destroy($id)

@@ -28,4 +28,9 @@ class Question extends Model
     {
         return $this->belongsToMany(Tag::class, 'question_tag');
     }
+
+    public function explanation()
+    {
+        return $this->hasOne(Explanation::class);
+    }
 }

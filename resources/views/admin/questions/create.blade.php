@@ -28,7 +28,7 @@
         @endif
 
         <!-- Formulario para crear pregunta -->
-        <form action="{{ route('admin.questions.store') }}" method="POST">
+        <form action="{{ route('admin.questions.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <!-- Texto de la pregunta -->
@@ -102,6 +102,18 @@
                         <input type="radio" name="correct_answer" value="false"> Falso
                     </label>
                 </div>
+            </div>
+
+            <!-- Justificación de la respuesta -->
+            <div class="form-group">
+                <label for="explanation_text">Justificación (texto):</label>
+                <textarea name="explanation_text" id="explanation_text" rows="4" class="form-control">{{ old('explanation_text') }}</textarea>
+            </div>
+
+            <!-- Imagen de la justificación -->
+            <div class="form-group">
+                <label for="explanation_image">Imagen para la justificación (opcional):</label>
+                <input type="file" name="explanation_image" id="explanation_image" class="form-control">
             </div>
 
             <div class="form-actions">
