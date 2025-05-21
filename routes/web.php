@@ -44,7 +44,7 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('auth.login');
 Route::post('/login', [AuthController::class, 'webLogin'])->name('auth.login.post');
 
 // Rutas protegidas manualmente
-Route::get('/dashboard', function () {
+Route::get('/', function () {
     if (!Auth::check()) {
         return redirect()->route('auth.login')->with('error', '❌ Debes iniciar sesión antes de acceder.');
     }

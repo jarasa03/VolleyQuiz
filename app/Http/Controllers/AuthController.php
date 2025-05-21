@@ -135,12 +135,12 @@ class AuthController extends Controller
      * Maneja el proceso de autenticación del usuario.
      *
      * Este método valida las credenciales ingresadas por el usuario y,
-     * si son correctas, inicia sesión y redirige al dashboard. En caso
+     * si son correctas, inicia sesión y redirige al home. En caso
      * de que las credenciales sean incorrectas, retorna a la vista de
      * login con un mensaje de error.
      *
      * @param \Illuminate\Http\Request $request La solicitud HTTP con los datos de login.
-     * @return \Illuminate\Http\RedirectResponse Redirección al dashboard si la autenticación es exitosa,
+     * @return \Illuminate\Http\RedirectResponse Redirección al home si la autenticación es exitosa,
      *                                          o de vuelta al login con un mensaje de error si falla.
      */
     public function webLogin(Request $request)
@@ -162,7 +162,7 @@ class AuthController extends Controller
         // Regenerar la sesión para proteger contra ataques de fijación de sesión.
         $request->session()->regenerate();
 
-        return redirect()->route('dashboard')->with('success', '✅ Inicio de sesión exitoso.');
+        return redirect()->route('home')->with('success', '✅ Inicio de sesión exitoso.');
     }
 
 
@@ -196,7 +196,7 @@ class AuthController extends Controller
         if ($apiResponse->getStatusCode() === 201) {
             $userData = json_decode($apiResponse->getContent(), true);
             Auth::loginUsingId($userData['user']['id']);
-            return redirect()->route('dashboard')->with('success', 'Registro exitoso. Bienvenido!');
+            return redirect()->route('home')->with('success', 'Registro exitoso. Bienvenido!');
         }
 
         // Si falla, mostrar el mensaje de error

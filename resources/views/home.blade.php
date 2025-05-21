@@ -1,10 +1,19 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', 'Inicio')
 
 @section('content')
-    <main class="main-content">
-        <h1>Bienvenido al Dashboard 🎉</h1>
-        <p>Desde aquí puedes acceder a todas las secciones de la plataforma.</p>
-    </main>
+    <section class="hero" style="background-image: url('/images/voley-hero.webp');">
+        <div class="overlay"></div>
+
+        <div class="hero-content">
+            <h1>Domina las Normas del Voleibol</h1>
+            <p>Practica con tests interactivos, repasa la normativa y alcanza el siguiente nivel.</p>
+
+            <div class="hero-buttons">
+                <a href="#" class="zen">Empezar Modo Zen</a>
+                <a href="{{ route('documentacion.dashboard') }}" class="docs">Ver Documentación</a>
+            </div>
+        </div>
+    </section>
 @endsection
