@@ -108,3 +108,15 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
     display: none !important;
     visibility: hidden !important;
 }
+
+/* Selección de color */
+
+*::selection {
+    background: $color-primary !important;
+    color: #ffffff !important;
+}
+
+*::-moz-selection {
+    background: $color-primary !important;
+    color: #ffffff !important;
+}

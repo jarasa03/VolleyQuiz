@@ -76,5 +76,41 @@
         </div>
     </section>
 
+    <div class="custom-shape-divider-bottom-1747828298">
+        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <rect x="1200" height="3.6"></rect>
+            <rect height="3.6"></rect>
+            <path d="M0,0V3.6H580.08c11,0,19.92,5.09,19.92,13.2,0-8.14,8.88-13.2,19.92-13.2H1200V0Z" class="shape-fill">
+            </path>
+        </svg>
+    </div>
+
+    <section class="section-why">
+        <div class="container">
+            <h2>¿Por qué usar VolleyQuiz?</h2>
+            <div class="why-grid">
+                <div class="why-item">
+                    <span class="emoji">📚</span>
+                    <h3>Aprende Jugando</h3>
+                    <p>Refuerza tu conocimiento con tests dinámicos y sin presión.</p>
+                </div>
+                <div class="why-item">
+                    <span class="emoji">🎯</span>
+                    <h3>Entrena con Objetivo</h3>
+                    <p>Organizado por niveles y categorías para avanzar de forma efectiva.</p>
+                </div>
+                <div class="why-item">
+                    <span class="emoji">⚡</span>
+                    <h3>Acceso Rápido</h3>
+                    <p>Ingresa, responde y mejora en minutos. Totalmente accesible.</p>
+                </div>
+                <div class="why-item">
+                    <span class="emoji">💡</span>
+                    <h3>Ideal para Todos</h3>
+                    <p>Perfecto para árbitros, entrenadores y jugadores de cualquier nivel.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
 @endsection

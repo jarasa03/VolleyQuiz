@@ -141,3 +141,77 @@ body.home-page {
 .custom-shape-divider-bottom-1747826865 .shape-fill {
     fill: $color-light;
 }
+
+.section-why {
+    padding: 6rem 1.5rem;
+    background-color: $color-light;
+    text-align: center;
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: $color-primary;
+        margin-bottom: 3rem;
+    }
+    .why-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        @media (min-width: 768px) {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        @media (min-width: 1024px) {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+    .why-item {
+        background-color: #fff;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease;
+        .emoji {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: $color-dark;
+            margin-bottom: 0.5rem;
+        }
+        p {
+            font-size: 1rem;
+            color: $color-dark;
+        }
+        &:hover {
+            transform: translateY(-5px);
+        }
+    }
+}
+
+.custom-shape-divider-bottom-1747828298 {
+    margin-top: -225px;
+    position: relative;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    transform: rotate(180deg);
+}
+
+.custom-shape-divider-bottom-1747828298 svg {
+    position: relative;
+    display: block;
+    width: calc(100% + 1.3px);
+    height: 250px;
+}
+
+.custom-shape-divider-bottom-1747828298 .shape-fill {
+    fill: $color-light;
+}
