@@ -215,3 +215,39 @@ body.home-page {
 .custom-shape-divider-bottom-1747828298 .shape-fill {
     fill: $color-light;
 }
+
+.call-to-action {
+    background: linear-gradient(
+        135deg,
+        $color-primary,
+        darken($color-primary, 10%)
+    );
+    color: $color-light;
+    padding: 5rem 1.5rem;
+    text-align: center;
+    h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    p {
+        font-size: 1.125rem;
+        margin-bottom: 2rem;
+    }
+    .cta-button {
+        background-color: $color-secondary;
+        color: $color-dark;
+        font-weight: bold;
+        border: none;
+        border-radius: 9999px;
+        padding: 0.75rem 1.75rem;
+        font-size: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        &:hover {
+            background-color: darken($color-secondary, 7%);
+            transform: translateY(-2px);
+        }
+    }
+}

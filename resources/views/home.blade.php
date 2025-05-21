@@ -113,4 +113,12 @@
         </div>
     </section>
 
+    <section class="call-to-action">
+        <h2>¿Listo para mejorar tus conocimientos de voleibol?</h2>
+        <p>Regístrate gratis y empieza a practicar con nuestros modos de juego y recursos oficiales.</p>
+        <a href="{{ route('auth.register') }}" class="cta-button">Crear cuenta</a>
+    </section>
+
+
+
 @endsection
