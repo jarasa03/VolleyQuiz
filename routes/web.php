@@ -198,3 +198,9 @@ Route::get('/documentacion', [DocumentsController::class, 'dashboard'])->name('d
 Route::get('/documentacion/{seccion}', [DocumentsController::class, 'verSeccion'])->name('documentacion.seccion');
 Route::get('/documentacion/carpeta/{id}', [DocumentsController::class, 'verCarpeta'])->name('documentacion.carpeta');
 Route::get('/documentos/{id}/descargar', [DocumentsController::class, 'download'])->name('documentacion.download');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/modo-zen', function () {
+        return view('zen.index');
+    })->name('zen.index');
+});
