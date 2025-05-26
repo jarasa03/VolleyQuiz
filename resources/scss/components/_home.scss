@@ -302,3 +302,103 @@ body.home-page {
 .custom-shape-divider-bottom-1747828298 {
     z-index: -5;
 }
+
+.section-faq {
+    background-color: #ffffff;
+    padding: 6rem 1.5rem;
+    text-align: center;
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .section-title {
+        font-size: 2rem;
+        color: $color-primary;
+        margin-bottom: 2rem;
+        font-weight: 700;
+    }
+    .faq-item {
+        margin-bottom: 1rem;
+        text-align: left;
+        border: 1px solid lighten($color-primary, 30%);
+        border-radius: 0.75rem;
+        overflow: hidden;
+        background: white;
+    }
+    .faq-question {
+        background: $color-primary;
+        color: $color-light;
+        font-weight: 600;
+        padding: 1rem 1.5rem;
+        width: 100%;
+        border: none;
+        font-size: 1.125rem;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background-color 0.3s ease;
+        .icon {
+            font-size: 1.25rem;
+            transition: transform 0.3s ease;
+        }
+        &.active {
+            background-color: darken($color-primary, 10%);
+        }
+    }
+    .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        padding: 0 1.5rem;
+        background-color: #fff;
+        font-size: 1rem;
+        line-height: 1.6;
+        color: $color-dark;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        &.open {
+            padding: 1rem 1.5rem;
+            max-height: 500px; // Suficiente para una respuesta media
+        }
+    }
+}
+
+.custom-shape-divider-bottom-1748297854 {
+    position: relative;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    transform: rotate(180deg);
+}
+
+.custom-shape-divider-bottom-1748297854 svg {
+    position: relative;
+    display: block;
+    width: calc(100% + 1.3px);
+    height: 62px;
+}
+
+.custom-shape-divider-bottom-1748297854 .shape-fill {
+    fill: $color-light;
+}
+
+.custom-shape-divider-top-1748297969 {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+}
+
+.custom-shape-divider-top-1748297969 svg {
+    position: relative;
+    display: block;
+    width: calc(246% + 1.3px);
+    height: 62px;
+}
+
+.custom-shape-divider-top-1748297969 .shape-fill {
+    fill: $color-light;
+}

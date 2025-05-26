@@ -42,3 +42,26 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
+
+document.querySelectorAll('.faq-question').forEach(button => {
+    button.addEventListener('click', () => {
+        const answer = button.nextElementSibling;
+        const icon = button.querySelector('.icon');
+        const isOpen = answer.classList.contains('open');
+
+        // Opcional: cerrar todos primero
+        document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
+        document.querySelectorAll('.faq-question').forEach(b => {
+            b.classList.remove('active');
+            const i = b.querySelector('.icon');
+            if (i) i.textContent = '+';
+        });
+
+        // Si no estaba abierto, abrirlo
+        if (!isOpen) {
+            answer.classList.add('open');
+            button.classList.add('active');
+            if (icon) icon.textContent = '–';
+        }
+    });
+});

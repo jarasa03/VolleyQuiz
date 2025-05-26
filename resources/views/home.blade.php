@@ -75,6 +75,15 @@
             </div>
         </div>
     </section>
+
+    <div class="custom-shape-divider-bottom-1748297854">
+        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path
+                d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
+                class="shape-fill"></path>
+        </svg>
+    </div>
+
     <section class="section-newsletter">
         <div class="container">
             <h2>📬 ¡No te pierdas ninguna novedad!</h2>
@@ -87,6 +96,52 @@
             </form>
         </div>
     </section>
+
+    <div class="custom-shape-divider-top-1748297969">
+        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0V6c0,21.6,291,111.46,741,110.26,445.39,3.6,459-88.3,459-110.26V0Z" class="shape-fill"></path>
+        </svg>
+    </div>
+
+
+    <section class="section-faq">
+        <div class="container">
+            <h2 class="section-title">Preguntas Frecuentes</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-question">
+                        ¿Cómo empiezo un test?
+                        <span class="icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        Puedes iniciar sesión, elegir un modo de juego y comenzar a responder preguntas al instante.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        ¿Necesito estar registrado para usar VolleyQuiz?
+                        <span class="icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        Puedes navegar libremente, pero para guardar tu progreso y acceder a todos los modos, es necesario
+                        registrarte.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        ¿Los tests se actualizan?
+                        <span class="icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        Sí, añadimos y revisamos preguntas frecuentemente para mantener el contenido actualizado con la
+                        normativa oficial.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
 
     <div class="custom-shape-divider-bottom-1747828298">
         <svg class="svg-poner-detras" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"
