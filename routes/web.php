@@ -15,7 +15,7 @@ use App\Http\Controllers\DocumentFoldersController;
 
 Route::get('/', function () {
     return view('home');
-});
+})->name('home');
 
 Route::get('/send-test-email', function () {
     $details = [
@@ -42,14 +42,6 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('auth.login');
 
 // Ruta para procesar el login
 Route::post('/login', [AuthController::class, 'webLogin'])->name('auth.login.post');
-
-// Rutas protegidas manualmente
-Route::get('/', function () {
-    if (!Auth::check()) {
-        return redirect()->route('auth.login')->with('error', '❌ Debes iniciar sesión antes de acceder.');
-    }
-    return view('home');
-})->name('home');
 
 // Ruta para cerrar sesión
 Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
