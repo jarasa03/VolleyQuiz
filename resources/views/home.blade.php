@@ -75,6 +75,18 @@
             </div>
         </div>
     </section>
+    <section class="section-newsletter">
+        <div class="container">
+            <h2>📬 ¡No te pierdas ninguna novedad!</h2>
+            <p>Suscríbete a nuestro boletín y sé el primero en conocer los nuevos modos, niveles y mejoras de VolleyQuiz.
+            </p>
+
+            <form action="#" method="POST" class="newsletter-form">
+                <input type="email" name="email" placeholder="Tu correo electrónico" required>
+                <button type="submit">Suscribirme</button>
+            </form>
+        </div>
+    </section>
 
     <div class="custom-shape-divider-bottom-1747828298">
         <svg class="svg-poner-detras" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"
@@ -85,6 +97,9 @@
             </path>
         </svg>
     </div>
+
+
+
 
     <section class="section-why">
         <div class="container">
