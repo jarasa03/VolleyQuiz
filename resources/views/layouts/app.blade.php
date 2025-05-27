@@ -36,6 +36,11 @@
         @yield('content')
     </div>
 
+    {{-- Mostrar footer solo si el body tiene clase has-navbar --}}
+    @if (in_array('has-navbar', $bodyClasses))
+        @include('layouts.footer')
+    @endif
+
 </body>
 
 </html>
