@@ -31,12 +31,6 @@ Route::get('/send-test-email', function () {
     return "Correo enviado correctamente!";
 });
 
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('auth.login');
-
-Route::post('/login', [AuthController::class, 'webLogin'])->name('auth.login.post');
-
 // Ruta para mostrar el login
 Route::get('/login', [AuthController::class, 'showLogin'])->name('auth.login');
 
@@ -81,11 +75,6 @@ Route::get('/password/reset/{token}', [AuthController::class, 'showResetPassword
 Route::post('/password/reset', [AuthController::class, 'resetPassword'])->name('password.update');
 
 Route::get('/perfil', [UsersController::class, 'verPerfil'])->name('users.perfil');
-
-// Rutas de administración protegidas por autenticación
-Route::middleware(['auth'])->group(function () {
-    Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
-});
 
 // Agrupamos las rutas de administración bajo el prefijo "admin" y protegemos con autenticación
 Route::middleware(['auth'])->prefix('admin')->group(function () {

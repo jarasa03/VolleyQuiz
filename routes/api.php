@@ -110,10 +110,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 // Autenticación
-Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
-Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
+Route::post('/login', [AuthController::class, 'login'])->name('api.login');
+Route::post('/register', [AuthController::class, 'register'])->name('api.register');
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
 });
 
 // Esto soluciona el error "Route [login] not defined."
