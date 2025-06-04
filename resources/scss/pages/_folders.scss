@@ -147,12 +147,14 @@
 
 .documentation-page.documentation-folder .documentation-container {
     max-width: 90vw;
-    height: 80vh;
+    height: 60vh;
     margin: 2rem auto;
     padding: 2rem;
     border-radius: 2rem;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     background-color: $color-light;
+    position: absolute;
+    transform: translateY(-10%);
 }
 
 .folder-tile {

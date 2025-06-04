@@ -5,7 +5,7 @@
 @push('body-class', 'documentation-page')
 
 @section('content')
-    <div class="documentation-page">
+    <div class="documentation-page-container">
         <div class="documentation-container">
             <h1>Documentación</h1>
             <p>Consulta los reglamentos y guías oficiales organizados por federación o categoría:</p>

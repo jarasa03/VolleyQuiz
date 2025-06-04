@@ -23,24 +23,24 @@
 @endphp
 
 <body class="{{ implode(' ', $bodyClasses) }} @stack('body-class')">
+    <div class="page-wrapper">
+        <!-- Mostrar navbar solo si NO estamos en rutas de autenticación -->
+        @unless (request()->routeIs('auth.login') ||
+                request()->routeIs('auth.register') ||
+                request()->routeIs('password.request') ||
+                request()->routeIs('password.reset'))
+            @include('layouts.navbar')
+        @endunless
 
-    <!-- Mostrar navbar solo si NO estamos en las rutas de autenticación -->
-    @unless (request()->routeIs('auth.login') ||
-            request()->routeIs('auth.register') ||
-            request()->routeIs('password.request') ||
-            request()->routeIs('password.reset'))
-        @include('layouts.navbar')
-    @endunless
+        <main class="container">
+            @yield('content')
+        </main>
 
-    <div class="container">
-        @yield('content')
+        {{-- Mostrar footer solo si el body tiene clase has-navbar --}}
+        @if (in_array('has-navbar', $bodyClasses))
+            @include('layouts.footer')
+        @endif
     </div>
-
-    {{-- Mostrar footer solo si el body tiene clase has-navbar --}}
-    @if (in_array('has-navbar', $bodyClasses))
-        @include('layouts.footer')
-    @endif
-
 </body>
 
 </html>

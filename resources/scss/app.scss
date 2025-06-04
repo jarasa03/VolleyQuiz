@@ -12,6 +12,25 @@
 @import "components/hero";
 @import "components/home";
 @import "components/footer";
+// Layout base para sticky footer
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main.container {
+    flex: 1;
+}
+
+// Tipografía global
 * {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
         Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
@@ -25,16 +44,15 @@
     align-items: center;
     width: 100%;
     input {
-        flex: 1; // Hace que el input ocupe el espacio disponible
-        width: 100%; // Garantiza que el ancho sea consistente con otros inputs
+        flex: 1;
+        width: 100%;
         padding: 10px;
-        padding-right: 40px; // Espacio para el icono
+        padding-right: 40px;
         border: 1px solid #ccc;
         border-radius: 5px;
         font-size: 16px;
-        box-sizing: border-box; // Evita que el padding afecte el ancho total
+        box-sizing: border-box;
     }
-    // Icono del ojo
     .toggle-password {
         position: absolute;
         right: 10px;
@@ -43,27 +61,27 @@
         color: #555;
         transition: color 0.3s ease;
         &:hover {
-            color: #007bff; // Azul al pasar el ratón
+            color: #007bff;
         }
         &:active {
-            color: #0056b3; // Azul más oscuro al hacer clic, sin cambiar tamaño
+            color: #0056b3;
         }
     }
 }
 
 .no-select {
-    user-select: none; // Evita que el texto se seleccione
+    user-select: none;
 }
 
-// **ESTILOS GLOBALES PARA TODAS LAS ALERTAS**
+// Estilos globales para alertas
 .alert {
     padding: 10px 15px;
     margin-bottom: 15px;
     border-radius: 5px;
     font-size: 14px;
     display: flex;
-    flex-direction: column; // Apilar elementos verticalmente
-    align-items: flex-start; // Alinear a la izquierda
+    flex-direction: column;
+    align-items: flex-start;
     font-weight: 500;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.05);
     &.alert-info {
@@ -92,26 +110,27 @@
     }
 }
 
-// Asegurar que todos los inputs tengan el mismo ancho en auth-container
+// Inputs en auth-container
 .auth-container input {
     width: 100%;
-    box-sizing: border-box; // Se asegura de que el padding no modifique el tamaño total
+    box-sizing: border-box;
 }
 
+// Espacio debajo de navbar
 .has-navbar .main-content {
-    margin-top: 120px; // Ajusta este valor según la altura de la navbar
+    margin-top: 120px;
 }
 
-input[type="password"]::-ms-reveal, // Para Edge
-input[type="password"]::-ms-clear, // Para Edge
-input[type="password"]::-webkit-contacts-auto-fill-button, // Para Chrome
+// Ocultar iconos de autocompletado en contraseñas
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-contacts-auto-fill-button,
 input[type="password"]::-webkit-credentials-auto-fill-button {
     display: none !important;
     visibility: hidden !important;
 }
 
-/* Selección de color */
-
+// Selección de texto
 *::selection {
     background: darken($color-primary, 5%) !important;
     color: #ffffff !important;

@@ -1,8 +1,10 @@
 .documentation-page {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    .documentation-page-container {
+        display: flex;
+        align-self: center;
+        justify-content: center;
+        margin-top: 400px;
+    }
     .documentation-container {
         background-color: $color-light;
         color: $color-dark;
@@ -42,6 +44,12 @@
                 background-color: darken($color-secondary, 10%);
             }
         }
+    }
+    .site-footer {
+        padding-left: 30px;
+        position: static;
+        bottom: 0px;
+        box-sizing: border-box;
     }
 }
 

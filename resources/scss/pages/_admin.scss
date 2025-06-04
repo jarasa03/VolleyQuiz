@@ -15,10 +15,6 @@ body.admin-page {
     background: $auth-bg-gradient !important;
 }
 
-.has-navbar {
-    overflow: hidden;
-}
-
 // Asegurar que `admin-container` se mantenga en el centro y con tamaño fijo
 .admin-container {
     max-width: 400px;
