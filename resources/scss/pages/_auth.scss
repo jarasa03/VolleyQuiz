@@ -2,14 +2,12 @@
 // Estilos generales para los contenedores de autenticación
 .auth-container {
     max-width: 400px;
-    margin: 50px auto;
-    padding: 30px;
-    padding-top: 24px;
-    background: $color-light;
+    width: 100%;
+    background: #e6e6fa;
+    padding: 24px 30px 30px;
     border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px #0000001a;
     text-align: center;
-    width: 400px;
     h1 {
         color: $color-dark;
         font-size: 24px;
@@ -86,6 +84,13 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    main.container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem; // evita que se pegue demasiado a los bordes en móvil
+    }
 }
 
 // Responsividad
