@@ -1,0 +1,115 @@
+@import "../base/variables";
+.zen-page {
+    .zen-container {
+        background-color: $color-light;
+        border-radius: 30px;
+        max-width: 600px;
+        margin: 200px auto;
+        padding: 2rem;
+        text-align: center;
+        .zen-header {
+            margin-bottom: 2rem;
+            h1 {
+                color: $color-primary;
+            }
+            p {
+                color: $color-dark;
+                font-size: large;
+            }
+        }
+        .zen-button {
+            background-color: $color-secondary;
+            color: $color-dark;
+            padding: 0.75rem 2rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 300px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            &:hover {
+                background-color: darken($color-secondary, 10%);
+            }
+        }
+    }
+}
+
+.zen-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.zen-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+}
+
+.zen-option {
+    background-color: $color-light;
+    border: 2px solid $color-primary;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    input[type="radio"] {
+        margin-right: 1rem;
+        accent-color: $color-accent;
+    }
+    &:hover {
+        background-color: lighten($color-primary, 40%);
+    }
+}
+
+.zen-explanation-text {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background-color: $color-info-bg;
+    border-left: 4px solid $color-info;
+    border-radius: 8px;
+    h3 {
+        color: $color-info;
+        margin-bottom: 0.5rem;
+    }
+    p {
+        margin: 0;
+        color: $color-dark;
+    }
+}
+
+.zen-explanation-image {
+    margin-top: 2rem;
+    img {
+        max-width: 100%;
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    }
+}
+
+.zen-list {
+    list-style: none;
+    padding: 0;
+    li.correct {
+        color: green;
+        font-weight: bold;
+    }
+    li.incorrect {
+        color: red;
+        text-decoration: line-through;
+    }
+}
+
+.zen-explanation-image {
+    margin-bottom: 32px;
+    img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+}

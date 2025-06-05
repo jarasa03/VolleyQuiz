@@ -12,6 +12,7 @@ use App\Http\Controllers\QuestionsController;
 use App\Http\Controllers\TagsController;
 use App\Http\Controllers\DocumentsController;
 use App\Http\Controllers\DocumentFoldersController;
+use App\Http\Controllers\ZenModeController;
 
 Route::get('/', function () {
     return view('home');
@@ -181,7 +182,11 @@ Route::get('/documentacion/carpeta/{id}', [DocumentsController::class, 'verCarpe
 Route::get('/documentos/{id}/descargar', [DocumentsController::class, 'download'])->name('documentacion.download');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/modo-zen', function () {
-        return view('zen.index');
-    })->name('zen.index');
+    Route::prefix('modo-zen')->name('zen.')->group(function () {
+        Route::get('/', [ZenModeController::class, 'index'])->name('index');
+        Route::post('/start', [ZenModeController::class, 'start'])->name('start');
+        Route::get('/question/{index}', [ZenModeController::class, 'question'])->name('question');
+        Route::post('/answer/{index}', [ZenModeController::class, 'answer'])->name('answer');
+        Route::get('/result', [ZenModeController::class, 'result'])->name('result');
+    });
 });

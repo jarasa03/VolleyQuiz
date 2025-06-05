@@ -1,20 +1,22 @@
 @extends('layouts.app')
 
-@section('title', 'Modo Zen')
+@section('title', 'Resultado Modo Zen')
 
-@push('body-class', 'zen-page')
+@push('body-class')
+    zen-page
+@endpush
 
 @section('content')
     <div class="zen-container">
         <div class="zen-header">
-            <h1>Modo Zen</h1>
-            <p>Responde 10 preguntas aleatorias, sin presión. Verás la explicación tras cada respuesta.</p>
+            <h2>Resultado Final</h2>
+            <p>Has acertado <strong>{{ $aciertos }}/{{ $total }}</strong> preguntas.</p>
         </div>
 
         <form action="{{ route('zen.start') }}" method="POST">
             @csrf
             <button type="submit" class="zen-button">
-                Comenzar
+                Volver a Intentarlo
             </button>
         </form>
     </div>
