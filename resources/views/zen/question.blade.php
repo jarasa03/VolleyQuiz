@@ -11,6 +11,25 @@
         <div class="zen-header">
             <h2>Pregunta {{ $index + 1 }} de 10</h2>
             <p>{{ $question->question_text }}</p>
+
+            {{-- Mostrar etiquetas con sus colores --}}
+            <div class="zen-tags" style="margin-top: 10px;">
+                @foreach ($question->tags as $tag)
+                    <span
+                        style="
+                        color: {{ $tag->color }};
+                        border: 2px solid {{ $tag->color }};
+                        background-color: {{ $tag->color }}20;
+                        padding: 5px 10px;
+                        border-radius: 20px;
+                        font-weight: bold;
+                        display: inline-block;
+                        margin: 2px 5px 5px 0;
+                    ">
+                        {{ $tag->name }}
+                    </span>
+                @endforeach
+            </div>
         </div>
 
         <form action="{{ route('zen.answer', ['index' => $index]) }}" method="POST" class="zen-form">

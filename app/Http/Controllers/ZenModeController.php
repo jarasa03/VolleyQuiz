@@ -33,7 +33,7 @@ class ZenModeController extends Controller
             return redirect()->route('zen.result');
         }
 
-        $question = Question::with(['answers', 'explanation'])->findOrFail($questionIds[$index]);
+        $question = Question::with(['answers', 'explanation', 'tags'])->findOrFail($questionIds[$index]);
 
         return view('zen.question', [
             'question' => $question,
