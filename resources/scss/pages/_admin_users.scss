@@ -1,9 +1,10 @@
 @import "../base/variables"; // Importar las variables de color
 .admin-users-container {
+    justify-self: center;
     max-width: 1800px;
     max-height: 1000px;
     overflow: auto;
-    margin: 50px auto;
+    margin: 200px 50px auto;
     padding: 30px;
     padding-bottom: 0;
     padding-top: 20px;
@@ -76,12 +77,10 @@
 
 // Estilo general de la página de administración de usuarios
 .admin-users-page {
-    background: $auth-bg-gradient;
+    background: $body-bg-color;
     min-height: 100vh;
-    display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
 }
 
 .container {

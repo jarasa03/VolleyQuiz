@@ -96,15 +96,6 @@ html {
     margin: 0;
 }
 
-.admin-users-page {
-    display: flex;
-    justify-content: center; // Centrado horizontal
-    align-items: center; // Centrado vertical
-    min-height: 100vh; // Asegura que el contenedor tenga altura completa de la ventana
-    padding: 0 15px; // Asegura que el contenido no toque los bordes
-    background: $auth-bg-gradient;
-}
-
 #explanation_text {
     width: 100%;
     box-sizing: border-box;

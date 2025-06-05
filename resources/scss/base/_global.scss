@@ -1,4 +1,4 @@
 @import "./variables";
 body {
-    background-color: darken($color-primary, 20%);
+    background-color: $body-bg-color;
 }
