@@ -3,6 +3,11 @@
     color: $color-light;
     padding: 2rem 30px 20px 30px;
     text-align: center;
+    padding-left: 30px;
+    position: static;
+    bottom: 0px;
+    box-sizing: border-box;
+    margin-top: 120px;
     .container {
         max-width: 1800px;
         margin: 0 auto;

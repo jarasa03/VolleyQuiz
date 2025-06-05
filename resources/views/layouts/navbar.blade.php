@@ -8,10 +8,7 @@
         <!-- Sección Central: Links -->
         <div class="navbar__links">
             <a href="{{ route('documentacion.dashboard') }}" class="navbar__link">Documentación</a>
-            <a href="#" class="navbar__link">Arcade</a>
             <a href="{{ route('zen.index') }}" class="navbar__link">Zen</a>
-            <a href="#" class="navbar__link">Niveles</a>
-            <a href="#" class="navbar__link">Ranking</a>
 
             @auth
                 @if (auth()->user()->isAdmin() || auth()->user()->isSuperAdmin())
@@ -23,7 +20,7 @@
         <!-- Sección Derecha: Perfil y Cerrar Sesión -->
         <div class="navbar__profile-actions">
             @auth
-                <a href="{{ route('users.perfil') }}" class="navbar__profile-btn">{{ auth()->user()->name }}</a>
+                <span class="navbar__profile-btn">{{ auth()->user()->name }}</span>
 
                 <form action="{{ route('auth.logout') }}" method="POST" class="navbar__logout-form">
                     @csrf

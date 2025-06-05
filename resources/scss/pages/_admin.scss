@@ -1,26 +1,21 @@
 @import "../base/variables"; // Importamos las variables antes de usarlas
 // Forzamos que el `admin-page` ocupe toda la pantalla y cubra bien el fondo
 .admin-page {
-    background: $auth-bg-gradient;
-    min-height: 100vh;
-    width: 100vw;
-    display: flex;
+    background-color: darken($color-primary, 20%);
     justify-content: center;
     align-items: center;
-    overflow: hidden; // Evita desbordamientos
-    padding: 2rem; // protección en pantallas pequeñas
 }
 
 // Evitar que haya elementos con `background` inesperado
 body.admin-page {
-    background: $auth-bg-gradient !important;
+    background-color: darken($color-primary, 20%);
 }
 
 // Asegurar que `admin-container` se mantenga en el centro y con tamaño fijo
 .admin-container {
     max-width: 400px;
     width: 100%;
-    margin: 0 auto;
+    margin: 200px auto 0 auto;
     padding: 30px;
     background: $color-light;
     border-radius: 10px;

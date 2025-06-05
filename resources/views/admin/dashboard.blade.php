@@ -5,7 +5,7 @@
 @push('body-class', 'admin-page')
 
 @section('content')
-    <div class="admin-page">
+    <div class="admin-page-container">
         <div class="admin-container">
             <h1>Panel de Administración</h1>
             <p>Bienvenido, {{ auth()->user()->name }}. Selecciona una opción:</p>
