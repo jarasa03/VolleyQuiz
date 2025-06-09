@@ -5,7 +5,7 @@
 @push('body-class', 'admin-page')
 
 @section('content')
-    <div class="edit-user-container">
+    <div class="edit-user-container" style="margin-top: 150px">
         <h1>Editar Pregunta</h1>
 
         <!-- Mostrar mensajes de sesión -->
@@ -156,7 +156,7 @@
 
                 @if ($question->explanation && $question->explanation->image_path)
                     <img src="{{ asset($question->explanation->image_path) }}" alt="Imagen actual de explicación"
-                        style="max-width: 300px; margin-bottom: 10px;">
+                        style="max-width: 100%; margin-bottom: 10px;">
                 @else
                     <p class="text-muted">No hay imagen asociada.</p>
                 @endif
