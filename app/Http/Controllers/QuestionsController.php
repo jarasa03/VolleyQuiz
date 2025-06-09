@@ -58,10 +58,9 @@ class QuestionsController extends Controller
 
         $question = Question::create($validatedData);
 
-        // ✅ Guardar respuestas según el tipo de pregunta
+        // Guardar respuestas
         if ($validatedData['question_type'] === 'multiple_choice') {
             $answers = $request->input('answers', []);
-
             foreach ($answers as $answerData) {
                 if (!empty($answerData['text'])) {
                     $question->answers()->create([
@@ -71,32 +70,26 @@ class QuestionsController extends Controller
                 }
             }
         } elseif ($validatedData['question_type'] === 'true_false') {
-            $correctAnswer = $request->input('correct_answer'); // 'true' o 'false'
-
-            $question->answers()->create([
-                'answer_text' => 'true',
-                'is_correct' => $correctAnswer === 'true'
-            ]);
-
-            $question->answers()->create([
-                'answer_text' => 'false',
-                'is_correct' => $correctAnswer === 'false'
-            ]);
+            $correctAnswer = $request->input('correct_answer');
+            $question->answers()->create(['answer_text' => 'true', 'is_correct' => $correctAnswer === 'true']);
+            $question->answers()->create(['answer_text' => 'false', 'is_correct' => $correctAnswer === 'false']);
         }
 
-        // ✅ Asignar tags
+        // Asignar tags
         $tagIds = json_decode($request->input('tags', '[]'), true);
         if (is_array($tagIds) && !empty($tagIds)) {
             $validTags = Tag::whereIn('id', $tagIds)->pluck('id')->toArray();
             $question->tags()->sync($validTags);
         }
 
-        // ✅ Crear justificación si se proporciona texto o imagen
+        // Justificación
         if ($request->filled('explanation_text') || $request->hasFile('explanation_image')) {
             $imagePath = null;
-
             if ($request->hasFile('explanation_image')) {
-                $imagePath = $request->file('explanation_image')->store('explanations', 'public');
+                $image = $request->file('explanation_image');
+                $filename = $image->hashName();
+                $image->move(public_path('explanations'), $filename);
+                $imagePath = 'explanations/' . $filename;
             }
 
             $question->explanation()->create([
@@ -122,7 +115,6 @@ class QuestionsController extends Controller
     {
         $question = Question::findOrFail($id);
 
-        // Asegurar que los tags llegan como array de enteros
         $tagsArray = array_map('intval', explode(',', $request->input('tags', '')));
         $request->merge(['tags' => $tagsArray]);
 
@@ -138,15 +130,14 @@ class QuestionsController extends Controller
 
         $question->update($validatedData);
 
-        // Sincronizar tags
+        // Tags
         $tagIds = $request->input('tags', []);
         $validTags = Tag::whereIn('id', $tagIds)->pluck('id')->toArray();
         $question->tags()->sync($validTags);
 
-        // 🧹 Eliminar respuestas anteriores
+        // Respuestas
         $question->answers()->delete();
 
-        // 🔄 Reinsertar respuestas según el tipo de pregunta
         if ($validatedData['question_type'] === 'multiple_choice') {
             $answers = $request->input('answers', []);
             $correctFlags = $request->input('correct_answers', []);
@@ -161,31 +152,25 @@ class QuestionsController extends Controller
             }
         } elseif ($validatedData['question_type'] === 'true_false') {
             $correctAnswer = $request->input('correct_answer');
-
-            $question->answers()->create([
-                'answer_text' => 'true',
-                'is_correct' => $correctAnswer === 'true'
-            ]);
-
-            $question->answers()->create([
-                'answer_text' => 'false',
-                'is_correct' => $correctAnswer === 'false'
-            ]);
+            $question->answers()->create(['answer_text' => 'true', 'is_correct' => $correctAnswer === 'true']);
+            $question->answers()->create(['answer_text' => 'false', 'is_correct' => $correctAnswer === 'false']);
         }
 
-        // ✅ Crear o actualizar la justificación (con borrado de imagen anterior)
+        // Justificación
         if ($request->filled('explanation_text') || $request->hasFile('explanation_image')) {
             $existingExplanation = $question->explanation;
             $imagePath = $existingExplanation->image_path ?? null;
 
             if ($request->hasFile('explanation_image')) {
-                // Borrar imagen anterior si existe
-                if ($imagePath && Storage::disk('public')->exists($imagePath)) {
-                    Storage::disk('public')->delete($imagePath);
+                // Eliminar imagen anterior
+                if ($imagePath && file_exists(public_path($imagePath))) {
+                    unlink(public_path($imagePath));
                 }
 
-                // Subir nueva imagen
-                $imagePath = $request->file('explanation_image')->store('explanations', 'public');
+                $image = $request->file('explanation_image');
+                $filename = $image->hashName();
+                $image->move(public_path('explanations'), $filename);
+                $imagePath = 'explanations/' . $filename;
             }
 
             if ($existingExplanation) {

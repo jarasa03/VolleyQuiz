@@ -65,7 +65,7 @@
 
             @if ($question->explanation->image_path)
                 <div class="zen-explanation-image">
-                    <img src="{{ asset('storage/' . $question->explanation->image_path) }}" alt="Explicación visual">
+                    <img src="{{ asset($question->explanation->image_path) }}" alt="Explicación visual">
                 </div>
             @endif
         @endif
