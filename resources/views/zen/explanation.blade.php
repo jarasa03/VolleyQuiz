@@ -50,24 +50,26 @@
                             {{ mostrarTexto($question->answers->firstWhere('is_correct', true)?->answer_text, $question->question_type) }}
                         </strong></p>
 
-                    <p>Tu respuesta: <strong>
-                            {{ mostrarTexto($question->answers->firstWhere('id', $respuestaSeleccionada)?->answer_text, $question->question_type) }}
-                        </strong></p>
+                    @if ($question->question_type !== 'true_false')
+                        <p>Tu respuesta: <strong>
+                                {{ mostrarTexto($question->answers->firstWhere('id', $respuestaSeleccionada)?->answer_text, $question->question_type) }}
+                            </strong></p>
+                    @endif
                 @endif
             @endif
         </div>
 
-        @if ($question->explanation)
+        @if ($question->explanation && $question->explanation->text)
             <div class="zen-explanation-text">
                 <h3>¿Por qué?</h3>
                 <p>{{ $question->explanation->text }}</p>
             </div>
+        @endif
 
-            @if ($question->explanation->image_path)
-                <div class="zen-explanation-image">
-                    <img src="{{ asset($question->explanation->image_path) }}" alt="Explicación visual">
-                </div>
-            @endif
+        @if ($question->explanation && $question->explanation->image_path)
+            <div class="zen-explanation-image">
+                <img src="{{ asset($question->explanation->image_path) }}" alt="Explicación visual">
+            </div>
         @endif
 
         <form action="{{ $ultima ? route('zen.result') : route('zen.question', ['index' => $index + 1]) }}" method="GET">
