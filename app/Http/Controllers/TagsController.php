@@ -109,6 +109,11 @@ class TagsController extends Controller
     public function destroy($id)
     {
         $tag = Tag::findOrFail($id);
+
+        // 🔹 Elimina las relaciones con preguntas (tabla pivote question_tag)
+        $tag->questions()->detach();
+
+        // 🔹 Ahora puedes eliminar el tag sin error
         $tag->delete();
 
         return redirect()->route('admin.tags.index')->with('message', '✅ Tag eliminado correctamente.');

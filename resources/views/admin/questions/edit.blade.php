@@ -173,6 +173,7 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', function() {
+                // -------- Lógica para gestionar respuestas --------
                 const addAnswerBtn = document.getElementById('add-answer');
                 const answerList = document.getElementById('answer-list');
 
@@ -184,7 +185,6 @@
                     });
                 }
 
-                // Aplicar lógica a respuestas ya cargadas
                 document.querySelectorAll('.answer-item').forEach(item => {
                     const correctBtn = item.querySelector('.correct-answer-btn');
                     const correctInput = document.createElement('input');
@@ -195,15 +195,14 @@
                     addCorrectToggleLogic(correctBtn, correctInput);
                 });
 
-                // Nueva respuesta
                 addAnswerBtn.addEventListener('click', function() {
                     const answerDiv = document.createElement('div');
                     answerDiv.classList.add('answer-item');
                     answerDiv.innerHTML = `
-                        <input type="text" name="answers[]" class="form-control" placeholder="Escribe una respuesta" required>
-                        <button type="button" class="correct-answer-btn">✔</button>
-                        <button type="button" class="btn remove-answer">❌</button>
-                    `;
+                <input type="text" name="answers[]" class="form-control" placeholder="Escribe una respuesta" required>
+                <button type="button" class="correct-answer-btn">✔</button>
+                <button type="button" class="btn remove-answer">❌</button>
+            `;
 
                     const correctInput = document.createElement('input');
                     correctInput.type = 'hidden';
@@ -222,19 +221,60 @@
                         answerDiv.remove();
                     });
                 });
+
+                // -------- Lógica para selección de tags --------
+                const availableTags = document.querySelectorAll('.selectable-tag');
+                const selectedTagsContainer = document.getElementById('selected-tags');
+                const tagsInput = document.getElementById('tags-input');
+
+                let selectedTags = new Set(tagsInput.value.split(',').filter(id => id));
+
+                function updateTagsInput() {
+                    tagsInput.value = Array.from(selectedTags).join(',');
+                }
+
+                availableTags.forEach(tag => {
+                    const tagId = tag.getAttribute('data-id');
+
+                    if (selectedTags.has(tagId)) {
+                        tag.style.opacity = '0.5';
+                    }
+
+                    tag.addEventListener('click', function() {
+                        if (selectedTags.has(tagId)) {
+                            selectedTags.delete(tagId);
+                            const toRemove = document.getElementById(`selected-tag-${tagId}`);
+                            if (toRemove) toRemove.remove();
+                            tag.style.opacity = '1';
+                        } else {
+                            selectedTags.add(tagId);
+                            const clone = tag.cloneNode(true);
+                            clone.id = `selected-tag-${tagId}`;
+                            clone.addEventListener('click', function() {
+                                selectedTags.delete(tagId);
+                                clone.remove();
+                                tag.style.opacity = '1';
+                                updateTagsInput();
+                            });
+                            selectedTagsContainer.appendChild(clone);
+                            tag.style.opacity = '0.5';
+                        }
+                        updateTagsInput();
+                    });
+                });
+
+                updateTagsInput();
             });
 
-            // Lógica para actualizar visualmente la selección de verdadero/falso
+            // -------- Verdadero/Falso visual --------
             const trueFalseRadios = document.querySelectorAll('input[name="correct_answer"]');
 
             trueFalseRadios.forEach(radio => {
                 radio.addEventListener('change', function() {
-                    // Eliminar clases 'selected' de todos los labels
                     document.querySelectorAll('.true-false-label').forEach(label => {
                         label.classList.remove('selected');
                     });
 
-                    // Añadir clase 'selected' al label seleccionado
                     if (this.checked) {
                         this.closest('.true-false-label').classList.add('selected');
                     }
