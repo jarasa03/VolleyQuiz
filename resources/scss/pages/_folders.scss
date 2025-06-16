@@ -147,7 +147,8 @@
 
 .documentation-page.documentation-folder .documentation-container {
     max-width: 90vw;
-    height: 60vh;
+    height: auto;
+    min-height: 470px;
     margin: 300px auto -80px auto;
     padding: 2rem;
     border-radius: 2rem;

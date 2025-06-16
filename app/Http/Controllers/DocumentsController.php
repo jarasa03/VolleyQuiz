@@ -173,7 +173,7 @@ class DocumentsController extends Controller
             'section_id' => 'required|exists:document_sections,id',
             'file' => 'nullable|file|mimes:pdf,docx,doc,xls,xlsx|max:5120',
             'folder_id' => 'nullable|exists:document_folders,id',
-            'year' => 'nullable|string|max:9', // Asegúrate de validar el año correctamente
+            'year' => 'nullable|string|max:9',
         ]);
 
         if ($validator->fails()) {

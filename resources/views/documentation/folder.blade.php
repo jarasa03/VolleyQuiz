@@ -6,8 +6,32 @@
 
 @section('content')
     <div class="documentation-page">
-        <div class="documentation-container">
-            <h1>Documentación - {{ $seccion }}</h1>
+        <div class="documentation-container" style="height: auto;
+    min-height: 470px;">
+            <div class="documentation-header"
+                style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-bottom: 1rem;">
+
+                <div></div> <!-- Columna vacía para empujar el título al centro -->
+
+                <h1 style="margin: 0; text-align: center;">Documentación - {{ $seccion }}</h1>
+
+                <div style="text-align: right;">
+                    <a href="{{ route('documentacion.dashboard') }}" class="btn doc-back-button"
+                        style="background-color: #f4d35e;
+    color: black;
+    font-weight: 500;
+    border: none;
+    border-radius: 1rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;">
+                        ←Volver
+                    </a>
+                </div>
+            </div>
+
 
             @if (isset($breadcrumb))
                 <div class="breadcrumb">
